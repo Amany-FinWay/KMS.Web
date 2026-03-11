@@ -48,7 +48,7 @@
 
               <lucide-icon
                 [img]="iconList.Mail"
-                class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+                class="pointer-events-none absolute left-[0.5rem] top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
               ></lucide-icon>
 
               <input
@@ -72,7 +72,7 @@
 
               <lucide-icon
                 [img]="iconList.Lock"
-                class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+                class="pointer-events-none absolute left-[0.5rem] top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
               ></lucide-icon>
 
               <input
@@ -98,17 +98,7 @@
           </div>
 
           <!-- Options -->
-          <div class="flex items-center justify-between text-sm">
-
-            <label class="flex items-center gap-2 text-slate-600">
-              <input
-                type="checkbox"
-                name="rememberMe"
-                [(ngModel)]="rememberMe"
-                class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-              />
-              Remember me
-            </label>
+          <div class="flex items-center justify-end text-sm">
 
             <button
               type="button"

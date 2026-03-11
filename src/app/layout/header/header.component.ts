@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, HostListener } from '@angular/core';
+import { Component, signal, HostListener, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
   LucideAngularModule,
@@ -15,8 +15,10 @@ import {
   ShoppingBag, 
   Lock,
   Wallet,
-  Users
+  Users,
+  LogOut
 } from 'lucide-angular';
+import { AuthService } from '../../core/services/auth.service';
 
 const myIcons = {
   LayoutDashboard,
@@ -31,7 +33,8 @@ const myIcons = {
   ShoppingBag,
   Lock,
   Wallet,
-  Users
+  Users,
+  LogOut
 };
 
 type MyIconKey = keyof typeof myIcons;
@@ -46,6 +49,7 @@ type MyIconKey = keyof typeof myIcons;
 export class HeaderComponent {
   readonly iconList = myIcons;
   isMoreOpen = signal(false);
+  public authService = inject(AuthService);
 
   mainNav: { id: string; icon: MyIconKey; label: string }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard' },

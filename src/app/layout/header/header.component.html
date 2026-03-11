@@ -49,6 +49,9 @@
             <lucide-icon [img]="iconList.Bell" class="w-5 h-5"></lucide-icon>
             <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
         </div>
+        <div class="relative p-2 text-slate-400 hover:bg-slate-50 rounded-full cursor-pointer transition-colors" (click)="authService.logout()">
+        <lucide-icon [img]="iconList.LogOut" class="w-5 h-5"></lucide-icon>
+        </div>
         <div
             class="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-[11px] font-bold text-slate-600 border border-slate-300 uppercase">
             AD
