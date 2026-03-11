@@ -1,0 +1,538 @@
+<div class="min-h-[calc(100vh-64px)] bg-[#f8fafc]">
+  <section class="border-t border-slate-200 bg-white">
+    <!-- Header -->
+    <div class="border-b border-slate-200 bg-white">
+      <div class="mx-auto w-full max-w-[1300px] px-8 py-10">
+        <h1 class="text-[40px] font-semibold leading-none tracking-[-0.03em] text-[#0f172a]">
+          Integration Hub
+        </h1>
+        <p class="mt-3 text-[17px] text-slate-600">
+          Configure payment and SMS notification gateways
+        </p>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="bg-[#f8fafc]">
+      <div class="mx-auto w-full max-w-[1300px] px-8 py-10">
+
+        <!-- Payment Gateways -->
+        <div class="mb-11">
+          <div class="mb-8 flex items-start gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600">
+              <lucide-icon [img]="iconList.CreditCard" class="h-6 w-6"></lucide-icon>
+            </div>
+
+            <div>
+              <h2 class="text-[22px] font-semibold tracking-[-0.02em] text-slate-950">
+                Payment Gateways
+              </h2>
+              <p class="mt-1 text-[16px] text-slate-600">
+                Configure payment processing services
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-8">
+            <!-- Stripe -->
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between border-b border-slate-200 px-10 py-9">
+                <div class="flex items-start gap-5">
+                  <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+                    <lucide-icon [img]="iconList.CreditCard" class="h-7 w-7"></lucide-icon>
+                  </div>
+
+                  <div>
+                    <div class="text-[20px] font-semibold text-slate-950">Stripe</div>
+                    <div class="mt-1 text-[16px] text-slate-600">Active</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <button
+                    type="button"
+                    (click)="testConnection('stripe')"
+                    class="inline-flex h-12 items-center gap-3 rounded-2xl border border-slate-300 bg-white px-6 text-[16px] font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    <lucide-icon [img]="iconList.RefreshCw" class="h-5 w-5"></lucide-icon>
+                    <span>Test Connection</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="toggleSignal(stripeEnabled)"
+                    [class.bg-blue-600]="stripeEnabled()"
+                    [class.bg-slate-200]="!stripeEnabled()"
+                    class="relative h-10 w-[56px] rounded-full transition"
+                  >
+                    <span
+                      [class.translate-x-[24px]]="stripeEnabled()"
+                      [class.translate-x-0]="!stripeEnabled()"
+                      class="absolute left-1 top-1 h-8 w-8 rounded-full bg-white transition"
+                    ></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="px-10 py-9">
+                <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                  <div>
+                    <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                      API Key
+                    </label>
+                    <input
+                      [(ngModel)]="stripeApiKey"
+                      type="text"
+                      class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                      Webhook Secret
+                    </label>
+                    <input
+                      [(ngModel)]="stripeWebhookSecret"
+                      type="text"
+                      class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                    />
+                  </div>
+                </div>
+
+                <div class="mt-5 max-w-[730px]">
+                  <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                    Currency
+                  </label>
+
+                  <div class="relative">
+                    <select
+                      [(ngModel)]="stripeCurrency"
+                      class="h-14 w-full appearance-none rounded-2xl border border-slate-300 bg-white px-4 pr-10 text-[16px] text-slate-900 outline-none focus:border-slate-400"
+                    >
+                      @for (currency of currencies; track currency) {
+                        <option [value]="currency">{{ currency }}</option>
+                      }
+                    </select>
+
+                    <lucide-icon
+                      [img]="iconList.ChevronDown"
+                      class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
+                    ></lucide-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PayPal -->
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between px-10 py-9">
+                <div class="flex items-start gap-5">
+                  <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+                    <lucide-icon [img]="iconList.CreditCard" class="h-7 w-7"></lucide-icon>
+                  </div>
+
+                  <div>
+                    <div class="text-[20px] font-semibold text-slate-950">PayPal</div>
+                    <div class="mt-1 text-[16px] text-slate-600">Inactive</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <button
+                    type="button"
+                    (click)="testConnection('paypal')"
+                    class="inline-flex h-12 items-center gap-3 rounded-2xl border border-slate-300 bg-white px-6 text-[16px] font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    <lucide-icon [img]="iconList.RefreshCw" class="h-5 w-5"></lucide-icon>
+                    <span>Test Connection</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="toggleSignal(paypalEnabled)"
+                    [class.bg-blue-600]="paypalEnabled()"
+                    [class.bg-slate-200]="!paypalEnabled()"
+                    class="relative h-10 w-[56px] rounded-full transition"
+                  >
+                    <span
+                      [class.translate-x-[24px]]="paypalEnabled()"
+                      [class.translate-x-0]="!paypalEnabled()"
+                      class="absolute left-1 top-1 h-8 w-8 rounded-full bg-white transition"
+                    ></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Square -->
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between px-10 py-9">
+                <div class="flex items-start gap-5">
+                  <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+                    <lucide-icon [img]="iconList.CreditCard" class="h-7 w-7"></lucide-icon>
+                  </div>
+
+                  <div>
+                    <div class="text-[20px] font-semibold text-slate-950">Square</div>
+                    <div class="mt-1 text-[16px] text-slate-600">Inactive</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <button
+                    type="button"
+                    (click)="testConnection('square')"
+                    class="inline-flex h-12 items-center gap-3 rounded-2xl border border-slate-300 bg-white px-6 text-[16px] font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    <lucide-icon [img]="iconList.RefreshCw" class="h-5 w-5"></lucide-icon>
+                    <span>Test Connection</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="toggleSignal(squareEnabled)"
+                    [class.bg-blue-600]="squareEnabled()"
+                    [class.bg-slate-200]="!squareEnabled()"
+                    class="relative h-10 w-[56px] rounded-full transition"
+                  >
+                    <span
+                      [class.translate-x-[24px]]="squareEnabled()"
+                      [class.translate-x-0]="!squareEnabled()"
+                      class="absolute left-1 top-1 h-8 w-8 rounded-full bg-white transition"
+                    ></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SMS Gateways -->
+        <div class="mb-11">
+          <div class="mb-8 flex items-start gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-100 text-violet-600">
+              <lucide-icon [img]="iconList.MessageSquare" class="h-6 w-6"></lucide-icon>
+            </div>
+
+            <div>
+              <h2 class="text-[22px] font-semibold tracking-[-0.02em] text-slate-950">
+                SMS Gateways
+              </h2>
+              <p class="mt-1 text-[16px] text-slate-600">
+                Configure SMS notification services
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-8">
+            <!-- Twilio -->
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between border-b border-slate-200 px-10 py-9">
+                <div class="flex items-start gap-5">
+                  <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+                    <lucide-icon [img]="iconList.MessageSquare" class="h-7 w-7"></lucide-icon>
+                  </div>
+
+                  <div>
+                    <div class="text-[20px] font-semibold text-slate-950">Twilio SMS</div>
+                    <div class="mt-1 text-[16px] text-slate-600">Active</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <button
+                    type="button"
+                    (click)="testConnection('twilio')"
+                    class="inline-flex h-12 items-center gap-3 rounded-2xl border border-slate-300 bg-white px-6 text-[16px] font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    <lucide-icon [img]="iconList.RefreshCw" class="h-5 w-5"></lucide-icon>
+                    <span>Test Connection</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="toggleSignal(twilioEnabled)"
+                    [class.bg-violet-600]="twilioEnabled()"
+                    [class.bg-slate-200]="!twilioEnabled()"
+                    class="relative h-10 w-[56px] rounded-full transition"
+                  >
+                    <span
+                      [class.translate-x-[24px]]="twilioEnabled()"
+                      [class.translate-x-0]="!twilioEnabled()"
+                      class="absolute left-1 top-1 h-8 w-8 rounded-full bg-white transition"
+                    ></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="px-10 py-9">
+                <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                  <div>
+                    <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                      Account SID
+                    </label>
+                    <input
+                      [(ngModel)]="twilioAccountSid"
+                      type="text"
+                      class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                      Auth Token
+                    </label>
+                    <input
+                      [(ngModel)]="twilioAuthToken"
+                      type="text"
+                      class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                    />
+                  </div>
+                </div>
+
+                <div class="mt-5 max-w-[710px]">
+                  <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                    Phone Number
+                  </label>
+                  <input
+                    [(ngModel)]="twilioPhoneNumber"
+                    type="text"
+                    class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Vonage -->
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between px-10 py-9">
+                <div class="flex items-start gap-5">
+                  <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+                    <lucide-icon [img]="iconList.MessageSquare" class="h-7 w-7"></lucide-icon>
+                  </div>
+
+                  <div>
+                    <div class="text-[20px] font-semibold text-slate-950">Vonage SMS</div>
+                    <div class="mt-1 text-[16px] text-slate-600">Inactive</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <button
+                    type="button"
+                    (click)="testConnection('vonage')"
+                    class="inline-flex h-12 items-center gap-3 rounded-2xl border border-slate-300 bg-white px-6 text-[16px] font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    <lucide-icon [img]="iconList.RefreshCw" class="h-5 w-5"></lucide-icon>
+                    <span>Test Connection</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="toggleSignal(vonageEnabled)"
+                    [class.bg-violet-600]="vonageEnabled()"
+                    [class.bg-slate-200]="!vonageEnabled()"
+                    class="relative h-10 w-[56px] rounded-full transition"
+                  >
+                    <span
+                      [class.translate-x-[24px]]="vonageEnabled()"
+                      [class.translate-x-0]="!vonageEnabled()"
+                      class="absolute left-1 top-1 h-8 w-8 rounded-full bg-white transition"
+                    ></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- AWS SNS -->
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between px-10 py-9">
+                <div class="flex items-start gap-5">
+                  <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+                    <lucide-icon [img]="iconList.MessageSquare" class="h-7 w-7"></lucide-icon>
+                  </div>
+
+                  <div>
+                    <div class="text-[20px] font-semibold text-slate-950">AWS SNS</div>
+                    <div class="mt-1 text-[16px] text-slate-600">Inactive</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <button
+                    type="button"
+                    (click)="testConnection('aws-sns')"
+                    class="inline-flex h-12 items-center gap-3 rounded-2xl border border-slate-300 bg-white px-6 text-[16px] font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    <lucide-icon [img]="iconList.RefreshCw" class="h-5 w-5"></lucide-icon>
+                    <span>Test Connection</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="toggleSignal(awsEnabled)"
+                    [class.bg-violet-600]="awsEnabled()"
+                    [class.bg-slate-200]="!awsEnabled()"
+                    class="relative h-10 w-[56px] rounded-full transition"
+                  >
+                    <span
+                      [class.translate-x-[24px]]="awsEnabled()"
+                      [class.translate-x-0]="!awsEnabled()"
+                      class="absolute left-1 top-1 h-8 w-8 rounded-full bg-white transition"
+                    ></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Webhook URLs -->
+        <div class="mb-11 rounded-2xl border border-slate-200 bg-white px-10 py-9">
+          <div class="mb-8 flex items-start gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600">
+              <lucide-icon [img]="iconList.Webhook" class="h-6 w-6"></lucide-icon>
+            </div>
+
+            <div>
+              <h2 class="text-[22px] font-semibold tracking-[-0.02em] text-slate-950">
+                Webhook URLs
+              </h2>
+              <p class="mt-1 text-[16px] text-slate-600">
+                Configure webhook endpoints for event notifications
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div>
+              <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                Payment Success Webhook
+              </label>
+              <input
+                [(ngModel)]="paymentWebhook"
+                type="text"
+                class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-700 outline-none focus:border-slate-400"
+              />
+            </div>
+
+            <div>
+              <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                SMS Delivery Webhook
+              </label>
+              <input
+                [(ngModel)]="smsWebhook"
+                type="text"
+                class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-700 outline-none focus:border-slate-400"
+              />
+            </div>
+
+            <div class="rounded-2xl bg-blue-50 px-5 py-5">
+              <div class="flex items-start gap-4">
+                <lucide-icon [img]="iconList.CircleAlert" class="mt-0.5 h-6 w-6 text-blue-600"></lucide-icon>
+                <div>
+                  <div class="text-[16px] font-semibold text-blue-700">Webhook Security</div>
+                  <p class="mt-2 text-[15px] text-blue-600">
+                    Make sure to validate webhook signatures to ensure requests are authentic
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Identity Provider -->
+        <div class="mb-11 rounded-2xl border border-slate-200 bg-white px-10 py-9">
+          <div class="mb-8 flex items-start gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+              <lucide-icon [img]="iconList.Shield" class="h-6 w-6"></lucide-icon>
+            </div>
+
+            <div>
+              <h2 class="text-[22px] font-semibold tracking-[-0.02em] text-slate-950">
+                Identity Provider
+              </h2>
+              <p class="mt-1 text-[16px] text-slate-600">
+                Configure identity provider for user authentication
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+              Type
+            </label>
+
+            <div class="relative">
+              <select
+                [(ngModel)]="identityProvider"
+                class="h-14 w-full appearance-none rounded-2xl border border-slate-300 bg-white px-4 pr-10 text-[16px] text-slate-900 outline-none focus:border-slate-400"
+              >
+                @for (provider of identityProviders; track provider) {
+                  <option [value]="provider">{{ provider }}</option>
+                }
+              </select>
+
+              <lucide-icon
+                [img]="iconList.ChevronDown"
+                class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
+              ></lucide-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ticketing System -->
+        <div class="mb-10 rounded-2xl border border-slate-200 bg-white px-10 py-9">
+          <div class="mb-8 flex items-start gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+              <lucide-icon [img]="iconList.Ticket" class="h-6 w-6"></lucide-icon>
+            </div>
+
+            <div>
+              <h2 class="text-[22px] font-semibold tracking-[-0.02em] text-slate-950">
+                Ticketing System
+              </h2>
+              <p class="mt-1 text-[16px] text-slate-600">
+                Configure ticketing system for issue tracking
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+              Type
+            </label>
+
+            <div class="relative">
+              <select
+                [(ngModel)]="ticketingSystem"
+                class="h-14 w-full appearance-none rounded-2xl border border-slate-300 bg-white px-4 pr-10 text-[16px] text-slate-900 outline-none focus:border-slate-400"
+              >
+                @for (system of ticketingSystems; track system) {
+                  <option [value]="system">{{ system }}</option>
+                }
+              </select>
+
+              <lucide-icon
+                [img]="iconList.ChevronDown"
+                class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
+              ></lucide-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="flex justify-end">
+          <button
+            type="button"
+            (click)="saveAllSettings()"
+            class="inline-flex h-14 items-center gap-3 rounded-2xl bg-blue-600 px-8 text-[17px] font-semibold text-white shadow-sm transition hover:bg-blue-700"
+          >
+            <lucide-icon [img]="iconList.Save" class="h-5 w-5"></lucide-icon>
+            <span>Save All Settings</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

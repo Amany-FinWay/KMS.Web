@@ -1,0 +1,58 @@
+<header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-50">
+
+    <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-sm">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <span class="text-white font-semibold text-lg">K</span>
+            </div>
+        </div>
+        <span class="font-semibold text-slate-800 text-lg tracking-tight">Kiosk Manager</span>
+    </div>
+
+    <nav class="flex items-center gap-1">
+        @for (item of mainNav; track item.id) {
+        <a [routerLink]="['/' + item.id]" routerLinkActive="nav-active" [routerLinkActiveOptions]="{exact: true}"
+            class="nav-link flex items-center gap-2 px-4 py-2 rounded-xl text-[14px] font-medium text-slate-500 transition-all duration-200 cursor-pointer">
+            <lucide-icon [img]="iconList[item.icon]" class="w-4 h-4"></lucide-icon>
+            <span class="whitespace-nowrap">{{ item.label }}</span>
+        </a>
+        }
+
+        <div class="relative flex items-center">
+            <button (click)="toggleMore($event)" [class.nav-active]="isMoreOpen()"
+                class="nav-link flex items-center gap-2 px-4 py-2 rounded-xl text-[14px] font-medium text-slate-500 transition-all cursor-pointer">
+                <lucide-icon [img]="iconList.MoreHorizontal" class="w-4 h-4"></lucide-icon>
+                More
+                <lucide-icon [img]="iconList.ChevronDown" class="w-3 h-3 transition-transform duration-200"
+                    [class.rotate-180]="isMoreOpen()"></lucide-icon>
+            </button>
+
+            @if (isMoreOpen()) {
+            <div
+                class="absolute top-full left-0 mt-2 w-60 bg-white border border-slate-100 rounded-2xl shadow-2xl py-2 z-[100] animate-in fade-in slide-in-from-top-2">
+                @for (item of moreNav; track item.id) {
+                <a [routerLink]="['/' + item.id]" (click)="isMoreOpen.set(false)"
+                    class="flex items-center gap-3 px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+                    <div class="p-1.5 bg-slate-50 rounded-lg group-hover:bg-blue-100">
+                        <lucide-icon [img]="iconList[item.icon]" class="w-4 h-4 text-slate-500"></lucide-icon>
+                    </div>
+                    {{ item.label }}
+                </a>
+                }
+            </div>
+            }
+        </div>
+    </nav>
+
+    <div class="flex items-center gap-4">
+        <div class="relative p-2 text-slate-400 hover:bg-slate-50 rounded-full cursor-pointer transition-colors">
+            <lucide-icon [img]="iconList.Bell" class="w-5 h-5"></lucide-icon>
+            <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+        </div>
+        <div
+            class="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-[11px] font-bold text-slate-600 border border-slate-300 uppercase">
+            AD
+        </div>
+    </div>
+
+</header>
