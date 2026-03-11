@@ -1,0 +1,375 @@
+<div class="min-h-[calc(100vh-64px)] bg-slate-50">
+  <section class="border-t border-slate-200 bg-white">
+    <div class="flex items-start justify-between px-8 py-8">
+      <div class="flex items-start gap-5">
+        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-sm">
+          <lucide-icon [img]="iconList.Users" class="h-7 w-7"></lucide-icon>
+        </div>
+
+        <div>
+          <h1 class="text-2xl font-semibold tracking-[-0.02em] text-slate-950">
+            User Administration
+          </h1>
+          <p class="mt-1 text-[15px] text-slate-600">
+            Manage user accounts and role assignments
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button
+          type="button"
+          (click)="onViewRoles()"
+          class="inline-flex h-12 items-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 text-[15px] font-medium text-slate-800 shadow-sm transition hover:bg-slate-50"
+        >
+          <lucide-icon [img]="iconList.Shield" class="h-[18px] w-[18px]"></lucide-icon>
+          <span>View Roles</span>
+        </button>
+
+        <button
+          type="button"
+          (click)="onAddUser()"
+          class="inline-flex h-12 items-center gap-2 rounded-2xl bg-blue-600 px-5 text-[15px] font-medium text-white shadow-sm transition hover:bg-blue-700"
+        >
+          <lucide-icon [img]="iconList.UserPlus" class="h-[18px] w-[18px]"></lucide-icon>
+          <span>Add User</span>
+        </button>
+      </div>
+    </div>
+
+<div class="border-t border-slate-200 bg-slate-50 py-9">
+  <div class="mx-auto w-full max-w-[1300px] px-4 sm:px-6 lg:px-8">
+    <div class="rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+      <div class="grid grid-cols-1 gap-5 lg:grid-cols-[1.4fr_0.7fr_0.7fr]">
+        <div>
+          <label class="mb-3 block text-sm font-semibold text-slate-800">
+            Search Users
+          </label>
+
+          <div class="relative">
+            <lucide-icon
+              [img]="iconList.Search"
+              class="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-slate-400"
+            ></lucide-icon>
+
+            <input
+              type="text"
+              placeholder="Search by name, email, or username..."
+              [ngModel]="searchTerm()"
+              (ngModelChange)="searchTerm.set($event)"
+              class="h-12 w-full rounded-2xl border border-slate-300 bg-white pl-12 pr-4 text-[15px] text-slate-700 outline-none placeholder:text-slate-400 focus:border-slate-400"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="mb-3 block text-sm font-semibold text-slate-800">
+            Filter by Role
+          </label>
+
+          <div class="relative">
+            <select
+              [ngModel]="selectedRole()"
+              (ngModelChange)="selectedRole.set($event)"
+              class="h-12 w-full appearance-none rounded-2xl border border-slate-300 bg-white px-4 pr-10 text-[15px] text-slate-900 outline-none focus:border-slate-400"
+            >
+              @for (role of roles; track role) {
+                <option [value]="role">{{ role }}</option>
+              }
+            </select>
+
+            <lucide-icon
+              [img]="iconList.ChevronDown"
+              class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
+            ></lucide-icon>
+          </div>
+        </div>
+
+        <div>
+          <label class="mb-3 block text-sm font-semibold text-slate-800">
+            Filter by Status
+          </label>
+
+          <div class="relative">
+            <select
+              [ngModel]="selectedStatus()"
+              (ngModelChange)="selectedStatus.set($event)"
+              class="h-12 w-full appearance-none rounded-2xl border border-slate-300 bg-white px-4 pr-10 text-[15px] text-slate-900 outline-none focus:border-slate-400"
+            >
+              @for (status of statuses; track status) {
+                <option [value]="status">
+                  {{ status === 'All Status' ? status : (status | titlecase) }}
+                </option>
+              }
+            </select>
+
+            <lucide-icon
+              [img]="iconList.ChevronDown"
+              class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
+            ></lucide-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-7 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+      <div class="grid grid-cols-[1.35fr_1.85fr_0.9fr_1fr_0.8fr_0.9fr_0.8fr] gap-4 border-b border-slate-200 px-7 py-6 text-sm font-semibold text-slate-700">
+        <div>User</div>
+        <div>Contact</div>
+        <div>Department</div>
+        <div>Role</div>
+        <div>Status</div>
+        <div>Last Login</div>
+        <div>Actions</div>
+      </div>
+
+      @for (user of filteredUsers(); track trackByUser($index, user)) {
+        <div
+          class="grid grid-cols-[1.35fr_1.85fr_0.9fr_1fr_0.8fr_0.9fr_0.8fr] gap-4 border-b border-slate-200 px-7 py-6 last:border-b-0"
+        >
+          <div>
+            <div class="text-[18px] font-semibold tracking-[-0.02em] text-slate-950">
+              {{ user.name }}
+            </div>
+            <div class="mt-1 text-[15px] text-slate-500">
+              {{ user.username }}
+            </div>
+          </div>
+
+          <div class="space-y-2 text-[15px] text-slate-700">
+            <div class="flex items-center gap-2">
+              <lucide-icon [img]="iconList.Mail" class="h-4 w-4 text-slate-500"></lucide-icon>
+              <span>{{ user.email }}</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <lucide-icon [img]="iconList.Phone" class="h-4 w-4 text-slate-500"></lucide-icon>
+              <span>{{ user.phone }}</span>
+            </div>
+          </div>
+
+          <div class="flex items-center text-[15px] text-slate-700">
+            {{ user.department }}
+          </div>
+
+          <div class="flex items-center">
+            <span [class]="getRoleClass(user.role)">
+              {{ user.role }}
+            </span>
+          </div>
+
+          <div class="flex items-center">
+            <span [class]="getStatusClass(user.status)">
+              {{ user.status }}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2 text-[15px] text-slate-700">
+            <lucide-icon [img]="iconList.Calendar" class="h-4 w-4 text-slate-500"></lucide-icon>
+            <span>{{ user.lastLogin }}</span>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <button
+              type="button"
+              (click)="onEdit(user)"
+              class="text-blue-600 transition hover:scale-105"
+            >
+              <lucide-icon [img]="iconList.Pencil" class="h-5 w-5"></lucide-icon>
+            </button>
+
+            <button
+              type="button"
+              (click)="onDelete(user)"
+              class="text-red-500 transition hover:scale-105"
+            >
+              <lucide-icon [img]="iconList.Trash2" class="h-5 w-5"></lucide-icon>
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (filteredUsers().length === 0) {
+        <div class="px-7 py-10 text-center text-sm text-slate-500">
+          No users found.
+        </div>
+      }
+    </div>
+
+        <div class="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+      <div class="rounded-2xl border border-slate-200 bg-white px-7 py-8 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+        <div class="text-[14px] font-medium text-slate-600">Total Users</div>
+        <div class="mt-4 text-[40px] leading-none font-semibold tracking-[-0.03em] text-slate-950">
+          {{ totalUsers() }}
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 bg-white px-7 py-8 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+        <div class="text-[14px] font-medium text-slate-600">Active Users</div>
+        <div class="mt-4 text-[40px] leading-none font-semibold tracking-[-0.03em] text-emerald-600">
+          {{ activeUsers() }}
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 bg-white px-7 py-8 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+        <div class="text-[14px] font-medium text-slate-600">Administrators</div>
+        <div class="mt-4 text-[40px] leading-none font-semibold tracking-[-0.03em] text-red-500">
+          {{ administratorUsers() }}
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 bg-white px-7 py-8 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+        <div class="text-[14px] font-medium text-slate-600">Inactive Users</div>
+        <div class="mt-4 text-[40px] leading-none font-semibold tracking-[-0.03em] text-slate-700">
+          {{ inactiveUsers() }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </section>
+</div>
+
+
+<!-- Modal Add User -->
+@if (isAddUserOpen()) {
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4">
+
+  <div
+    class="w-full max-w-lg rounded-2xl bg-white shadow-2xl"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+
+      <h2 class="text-lg font-semibold text-slate-900">
+        Add New User
+      </h2>
+
+      <button
+        type="button"
+        (click)="closeAddUserModal()"
+        class="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+      >
+        ✕
+      </button>
+
+    </div>
+
+
+    <!-- Body -->
+    <div class="max-h-[65vh] overflow-y-auto px-6 py-5 space-y-4">
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">
+          Full Name
+        </label>
+
+        <input
+          type="text"
+          class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">
+          Username
+        </label>
+
+        <input
+          type="text"
+          class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">
+          Email
+        </label>
+
+        <input
+          type="email"
+          class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">
+          Phone
+        </label>
+
+        <input
+          type="text"
+          class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">
+          Department
+        </label>
+
+        <input
+          type="text"
+          class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">
+          Role
+        </label>
+
+        <select
+          class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm outline-none focus:border-blue-500"
+        >
+          <option>Viewer</option>
+          <option>Administrator</option>
+          <option>Operator</option>
+          <option>Technician</option>
+        </select>
+      </div>
+
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">
+          Password
+        </label>
+
+        <input
+          type="password"
+          class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+
+    </div>
+
+
+    <!-- Footer -->
+    <div class="flex justify-end gap-3 border-t border-slate-200 px-6 py-4">
+
+      <button
+        type="button"
+        (click)="closeAddUserModal()"
+        class="h-10 px-5 rounded-xl bg-slate-100 text-sm text-slate-700 hover:bg-slate-200"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="h-10 px-5 rounded-xl bg-blue-600 text-sm text-white hover:bg-blue-700"
+      >
+        Add User
+      </button>
+
+    </div>
+  </div>
+</div>
+}
