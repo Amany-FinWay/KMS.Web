@@ -1,0 +1,14 @@
+/* الكلاس الذي سيتم تفعيله عند اختيار الصفحة */
+.nav-active {
+    background-color: #eff6ff !important; /* bg-blue-50 */
+    color: #2563eb !important;            /* text-blue-600 */
+    font-weight: 600 !important;          /* font-semibold */
+}
+.nav-link:hover:not(.nav-active) {
+    background-color: #f8fafc; /* bg-slate-50 */
+    color: #374151;            /* text-slate-700 */
+}
+.nav-link:hover:not(.nav-active) {
+    background-color: #f8fafc; /* bg-slate-50 */
+    color: #374151;            /* text-slate-700 */
+}

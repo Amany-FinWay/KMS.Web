@@ -1,0 +1,40 @@
+<div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-semibold text-slate-900 tracking-tight">Kiosk Dashboard</h1>
+                <p class="text-slate-500 text-sm mt-1">Monitor and manage your self-service kiosks</p>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="relative flex h-2 w-2">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span class="text-sm text-slate-600">Live monitoring</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="space-y-8">
+    <div class="max-w-7xl mx-auto px-6 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+            <app-stat-card label="Total Kiosks" value="8" [icon]="icons.Monitor" colorClass="bg-[#3b82f6]">
+            </app-stat-card>
+
+            <app-stat-card label="Online Kiosks" value="5" total="8" [trend]="{ value: '62.5%', isUp: false }"
+                [icon]="icons.Activity" colorClass="bg-[#10b981]">
+            </app-stat-card>
+
+            <app-stat-card label="Total Revenue" value="$90,683" [trend]="{ value: '12.5% vs yesterday', isUp: true }"
+                [icon]="icons.DollarSign" colorClass="bg-[#a855f7]">
+            </app-stat-card>
+
+            <app-stat-card label="Active Alerts" value="6" [icon]="icons.AlertTriangle" colorClass="bg-[#ef4444]">
+            </app-stat-card>
+
+        </div>
+    </div>
+</div>
