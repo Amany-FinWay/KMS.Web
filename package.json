@@ -19,6 +19,8 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "ag-grid-angular": "^35.1.0",
+    "ag-grid-community": "^35.1.0",
     "lucide-angular": "^0.577.0",
     "ngx-spinner": "^18.0.0",
     "ngx-toastr": "^19.1.0",

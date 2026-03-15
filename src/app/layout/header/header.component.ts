@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, signal, HostListener, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
   LucideAngularModule,
   LayoutDashboard,
@@ -16,7 +16,8 @@ import {
   Lock,
   Wallet,
   Users,
-  LogOut
+  LogOut,
+  Ribbon
 } from 'lucide-angular';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -50,6 +51,7 @@ export class HeaderComponent {
   readonly iconList = myIcons;
   isMoreOpen = signal(false);
   public authService = inject(AuthService);
+  private router = inject(Router)
 
   mainNav: { id: string; icon: MyIconKey; label: string }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard' },
@@ -66,6 +68,10 @@ export class HeaderComponent {
     { id: 'cash', label: 'Cash Handling', icon: 'Wallet' },
     { id: 'admin', label: 'User Admin', icon: 'Users' },
   ];
+
+  isAnyMoreItemActive(): boolean {
+    return this.moreNav.some(item => this.router.url.includes(item.id));
+  }
 
   toggleMore(event: Event) {
     event.stopPropagation();

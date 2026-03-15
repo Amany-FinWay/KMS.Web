@@ -1,6 +1,10 @@
+/* استيراد الملف الأساسي */
+@import "ag-grid-community/styles/ag-grid.css";
+@import "ag-grid-community/styles/ag-theme-material.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 :root {
   --container-7xl: 80rem;
@@ -14,6 +18,7 @@ body {
   border: 0 solid;
   margin: 0;
   padding: 0;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 .max-w-7xl {

@@ -1,0 +1,44 @@
+::ng-deep .ag-theme-material {
+    --ag-font-family: inherit;
+    --ag-font-size: 13.5px;
+    --ag-header-height: 52px;
+    --ag-row-height: 85px; /* زودناها شوية عشان الـ 2 lines يرتاحوا */
+    --ag-cell-horizontal-padding: 24px;
+
+
+    --ag-border-color: #e5e7eb; /* Gray-200 من الفيجما */
+    --ag-header-background-color: #f9fafb; /* Gray-50 */
+    --ag-row-hover-color: #f3f4f6;
+}
+
+/* ضبط الخلايا (Cells) */
+::ng-deep .ag-theme-material .ag-cell {
+    display: flex !important;
+    flex-direction: column !important; /* السر هنا: عشان يترصوا تحت بعض */
+    justify-content: center !important; /* سنتر الكلام عمودياً */
+    align-items: flex-start !important; /* بداية الكلام من الشمال */
+    line-height: 1.2 !important; /* تقليل المسافة بين السطرين جوه الخلية */
+    -webkit-font-smoothing: antialiased;
+}
+
+/* تمييز الهيدر */
+::ng-deep .ag-theme-material .ag-header-cell-label {
+    font-weight: 600 !important;
+    color: #475569 !important;
+    font-size: 0.875rem;
+}
+
+::ng-deep .ag-theme-material .ag-header-cell {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #4b5563 !important; /* Gray-600 */
+}
+
+/* تأثير الـ Hover */
+::ng-deep .ag-theme-material .ag-row-hover {
+    background-color: #f8fafc !important;
+}
+
+::ng-deep .ag-header {
+    background-color: oklch(98.5% 0.002 247.839);
+}

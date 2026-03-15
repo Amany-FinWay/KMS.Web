@@ -1,13 +1,24 @@
 .nav-active {
-    background-color: #eff6ff !important;
-    color: #2563eb !important;
+    background-color: rgb(30, 58, 138) !important;
+    color: #fff !important;
     font-weight: 600 !important;
 }
-.nav-link:hover:not(.nav-active) {
-    background-color: #f8fafc;
-    color: #374151;
+.nav-active lucide-icon:has-not(.active) {
+  color: #2563eb; /* Tailwind's text-blue-600 */
+}
+
+.nav-active div {
+  background-color: #dbeafe; /* Tailwind's bg-blue-100 */
 }
 .nav-link:hover:not(.nav-active) {
     background-color: #f8fafc;
     color: #374151;
 }
+.nav-link:hover:not(.nav-active) {
+    background-color: #f8fafc;
+    color: #374151;
+}
+
+/* .tracking-tight{
+    color: rgb(30, 58, 138);
+} */
