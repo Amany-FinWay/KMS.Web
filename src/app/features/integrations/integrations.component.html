@@ -36,7 +36,11 @@
           <div class="space-y-8">
             <!-- Stripe -->
             <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <div class="flex items-center justify-between border-b border-slate-200 px-10 py-9">
+              <div
+                class="flex items-center justify-between px-10 py-9"
+                [class.border-b]="stripeEnabled()"
+                [class.border-slate-200]="stripeEnabled()"
+              >
                 <div class="flex items-start gap-5">
                   <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
                     <lucide-icon [img]="iconList.CreditCard" class="h-7 w-7"></lucide-icon>
@@ -44,7 +48,9 @@
 
                   <div>
                     <div class="text-[20px] font-semibold text-slate-950">Stripe</div>
-                    <div class="mt-1 text-[16px] text-slate-600">Active</div>
+                    <div class="mt-1 text-[16px] text-slate-600">
+                      {{ stripeEnabled() ? 'Active' : 'Inactive' }}
+                    </div>
                   </div>
                 </div>
 
@@ -74,58 +80,64 @@
                 </div>
               </div>
 
-              <div class="px-10 py-9">
-                <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
-                  <div>
-                    <label class="mb-3 block text-[15px] font-semibold text-slate-800">
-                      API Key
-                    </label>
-                    <input
-                      [(ngModel)]="stripeApiKey"
-                      type="text"
-                      class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
-                    />
+              @if (stripeEnabled()) {
+                <div class="px-10 py-9">
+                  <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        API Key
+                      </label>
+                      <input
+                        [(ngModel)]="stripeApiKey"
+                        type="text"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        Webhook Secret
+                      </label>
+                      <input
+                        [(ngModel)]="stripeWebhookSecret"
+                        type="text"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
                   </div>
 
-                  <div>
+                  <div class="mt-5 max-w-[730px]">
                     <label class="mb-3 block text-[15px] font-semibold text-slate-800">
-                      Webhook Secret
+                      Currency
                     </label>
-                    <input
-                      [(ngModel)]="stripeWebhookSecret"
-                      type="text"
-                      class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
-                    />
+
+                    <div class="relative">
+                      <select
+                        [(ngModel)]="stripeCurrency"
+                        class="h-14 w-full appearance-none rounded-2xl border border-slate-300 bg-white px-4 pr-10 text-[16px] text-slate-900 outline-none focus:border-slate-400"
+                      >
+                        @for (currency of currencies; track currency) {
+                          <option [value]="currency">{{ currency }}</option>
+                        }
+                      </select>
+
+                      <lucide-icon
+                        [img]="iconList.ChevronDown"
+                        class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
+                      ></lucide-icon>
+                    </div>
                   </div>
                 </div>
-
-                <div class="mt-5 max-w-[730px]">
-                  <label class="mb-3 block text-[15px] font-semibold text-slate-800">
-                    Currency
-                  </label>
-
-                  <div class="relative">
-                    <select
-                      [(ngModel)]="stripeCurrency"
-                      class="h-14 w-full appearance-none rounded-2xl border border-slate-300 bg-white px-4 pr-10 text-[16px] text-slate-900 outline-none focus:border-slate-400"
-                    >
-                      @for (currency of currencies; track currency) {
-                        <option [value]="currency">{{ currency }}</option>
-                      }
-                    </select>
-
-                    <lucide-icon
-                      [img]="iconList.ChevronDown"
-                      class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
-                    ></lucide-icon>
-                  </div>
-                </div>
-              </div>
+              }
             </div>
 
             <!-- PayPal -->
             <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <div class="flex items-center justify-between px-10 py-9">
+              <div
+                class="flex items-center justify-between px-10 py-9"
+                [class.border-b]="paypalEnabled()"
+                [class.border-slate-200]="paypalEnabled()"
+              >
                 <div class="flex items-start gap-5">
                   <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
                     <lucide-icon [img]="iconList.CreditCard" class="h-7 w-7"></lucide-icon>
@@ -133,7 +145,9 @@
 
                   <div>
                     <div class="text-[20px] font-semibold text-slate-950">PayPal</div>
-                    <div class="mt-1 text-[16px] text-slate-600">Inactive</div>
+                    <div class="mt-1 text-[16px] text-slate-600">
+                      {{ paypalEnabled() ? 'Active' : 'Inactive' }}
+                    </div>
                   </div>
                 </div>
 
@@ -162,11 +176,66 @@
                   </button>
                 </div>
               </div>
+
+              @if (paypalEnabled()) {
+                <div class="px-10 py-9">
+                  <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        Client ID
+                      </label>
+                      <input
+                        [(ngModel)]="paypalClientId"
+                        type="text"
+                        placeholder="Enter client id"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        Client Secret
+                      </label>
+                      <input
+                        [(ngModel)]="paypalClientSecret"
+                        type="text"
+                        placeholder="Enter client secret"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="mt-5 max-w-[730px]">
+                    <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                      Mode
+                    </label>
+
+                    <div class="relative">
+                      <select
+                        [(ngModel)]="paypalMode"
+                        class="h-14 w-full appearance-none rounded-2xl border border-slate-300 bg-white px-4 pr-10 text-[16px] text-slate-900 outline-none focus:border-slate-400"
+                      >
+                        <option value="sandbox">sandbox</option>
+                        <option value="live">live</option>
+                      </select>
+
+                      <lucide-icon
+                        [img]="iconList.ChevronDown"
+                        class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
+                      ></lucide-icon>
+                    </div>
+                  </div>
+                </div>
+              }
             </div>
 
             <!-- Square -->
             <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <div class="flex items-center justify-between px-10 py-9">
+              <div
+                class="flex items-center justify-between px-10 py-9"
+                [class.border-b]="squareEnabled()"
+                [class.border-slate-200]="squareEnabled()"
+              >
                 <div class="flex items-start gap-5">
                   <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
                     <lucide-icon [img]="iconList.CreditCard" class="h-7 w-7"></lucide-icon>
@@ -174,7 +243,9 @@
 
                   <div>
                     <div class="text-[20px] font-semibold text-slate-950">Square</div>
-                    <div class="mt-1 text-[16px] text-slate-600">Inactive</div>
+                    <div class="mt-1 text-[16px] text-slate-600">
+                      {{ squareEnabled() ? 'Active' : 'Inactive' }}
+                    </div>
                   </div>
                 </div>
 
@@ -203,6 +274,48 @@
                   </button>
                 </div>
               </div>
+
+              @if (squareEnabled()) {
+                <div class="px-10 py-9">
+                  <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        Application ID
+                      </label>
+                      <input
+                        [(ngModel)]="squareApplicationId"
+                        type="text"
+                        placeholder="Enter application id"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        Access Token
+                      </label>
+                      <input
+                        [(ngModel)]="squareAccessToken"
+                        type="text"
+                        placeholder="Enter access token"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="mt-5 max-w-[730px]">
+                    <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                      Location ID
+                    </label>
+                    <input
+                      [(ngModel)]="squareLocationId"
+                      type="text"
+                      placeholder="Enter location id"
+                      class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                    />
+                  </div>
+                </div>
+              }
             </div>
           </div>
         </div>
@@ -227,7 +340,11 @@
           <div class="space-y-8">
             <!-- Twilio -->
             <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <div class="flex items-center justify-between border-b border-slate-200 px-10 py-9">
+              <div
+                class="flex items-center justify-between px-10 py-9"
+                [class.border-b]="twilioEnabled()"
+                [class.border-slate-200]="twilioEnabled()"
+              >
                 <div class="flex items-start gap-5">
                   <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
                     <lucide-icon [img]="iconList.MessageSquare" class="h-7 w-7"></lucide-icon>
@@ -235,7 +352,9 @@
 
                   <div>
                     <div class="text-[20px] font-semibold text-slate-950">Twilio SMS</div>
-                    <div class="mt-1 text-[16px] text-slate-600">Active</div>
+                    <div class="mt-1 text-[16px] text-slate-600">
+                      {{ twilioEnabled() ? 'Active' : 'Inactive' }}
+                    </div>
                   </div>
                 </div>
 
@@ -265,47 +384,53 @@
                 </div>
               </div>
 
-              <div class="px-10 py-9">
-                <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
-                  <div>
-                    <label class="mb-3 block text-[15px] font-semibold text-slate-800">
-                      Account SID
-                    </label>
-                    <input
-                      [(ngModel)]="twilioAccountSid"
-                      type="text"
-                      class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
-                    />
+              @if (twilioEnabled()) {
+                <div class="px-10 py-9">
+                  <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        Account SID
+                      </label>
+                      <input
+                        [(ngModel)]="twilioAccountSid"
+                        type="text"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        Auth Token
+                      </label>
+                      <input
+                        [(ngModel)]="twilioAuthToken"
+                        type="text"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
                   </div>
 
-                  <div>
+                  <div class="mt-5 max-w-[730px]">
                     <label class="mb-3 block text-[15px] font-semibold text-slate-800">
-                      Auth Token
+                      Phone Number
                     </label>
                     <input
-                      [(ngModel)]="twilioAuthToken"
+                      [(ngModel)]="twilioPhoneNumber"
                       type="text"
                       class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
                     />
                   </div>
                 </div>
-
-                <div class="mt-5 max-w-[710px]">
-                  <label class="mb-3 block text-[15px] font-semibold text-slate-800">
-                    Phone Number
-                  </label>
-                  <input
-                    [(ngModel)]="twilioPhoneNumber"
-                    type="text"
-                    class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
-                  />
-                </div>
-              </div>
+              }
             </div>
 
             <!-- Vonage -->
             <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <div class="flex items-center justify-between px-10 py-9">
+              <div
+                class="flex items-center justify-between px-10 py-9"
+                [class.border-b]="vonageEnabled()"
+                [class.border-slate-200]="vonageEnabled()"
+              >
                 <div class="flex items-start gap-5">
                   <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
                     <lucide-icon [img]="iconList.MessageSquare" class="h-7 w-7"></lucide-icon>
@@ -313,7 +438,9 @@
 
                   <div>
                     <div class="text-[20px] font-semibold text-slate-950">Vonage SMS</div>
-                    <div class="mt-1 text-[16px] text-slate-600">Inactive</div>
+                    <div class="mt-1 text-[16px] text-slate-600">
+                      {{ vonageEnabled() ? 'Active' : 'Inactive' }}
+                    </div>
                   </div>
                 </div>
 
@@ -342,11 +469,57 @@
                   </button>
                 </div>
               </div>
+
+              @if (vonageEnabled()) {
+                <div class="px-10 py-9">
+                  <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        API Key
+                      </label>
+                      <input
+                        [(ngModel)]="vonageApiKey"
+                        type="text"
+                        placeholder="Enter api key"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        API Secret
+                      </label>
+                      <input
+                        [(ngModel)]="vonageApiSecret"
+                        type="text"
+                        placeholder="Enter api secret"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="mt-5 max-w-[730px]">
+                    <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                      From Number
+                    </label>
+                    <input
+                      [(ngModel)]="vonageFromNumber"
+                      type="text"
+                      placeholder="Enter from number"
+                      class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                    />
+                  </div>
+                </div>
+              }
             </div>
 
             <!-- AWS SNS -->
             <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <div class="flex items-center justify-between px-10 py-9">
+              <div
+                class="flex items-center justify-between px-10 py-9"
+                [class.border-b]="awsEnabled()"
+                [class.border-slate-200]="awsEnabled()"
+              >
                 <div class="flex items-start gap-5">
                   <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
                     <lucide-icon [img]="iconList.MessageSquare" class="h-7 w-7"></lucide-icon>
@@ -354,7 +527,9 @@
 
                   <div>
                     <div class="text-[20px] font-semibold text-slate-950">AWS SNS</div>
-                    <div class="mt-1 text-[16px] text-slate-600">Inactive</div>
+                    <div class="mt-1 text-[16px] text-slate-600">
+                      {{ awsEnabled() ? 'Active' : 'Inactive' }}
+                    </div>
                   </div>
                 </div>
 
@@ -383,6 +558,58 @@
                   </button>
                 </div>
               </div>
+
+              @if (awsEnabled()) {
+                <div class="px-10 py-9">
+                  <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        Access Key ID
+                      </label>
+                      <input
+                        [(ngModel)]="awsAccessKeyId"
+                        type="text"
+                        placeholder="Enter access key id"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                        Secret Access Key
+                      </label>
+                      <input
+                        [(ngModel)]="awsSecretAccessKey"
+                        type="text"
+                        placeholder="Enter secret access key"
+                        class="h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-[16px] text-slate-800 outline-none focus:border-slate-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="mt-5 max-w-[730px]">
+                    <label class="mb-3 block text-[15px] font-semibold text-slate-800">
+                      Region
+                    </label>
+
+                    <div class="relative">
+                      <select
+                        [(ngModel)]="awsRegion"
+                        class="h-14 w-full appearance-none rounded-2xl border border-slate-300 bg-white px-4 pr-10 text-[16px] text-slate-900 outline-none focus:border-slate-400"
+                      >
+                        <option value="us-east-1">us-east-1</option>
+                        <option value="us-west-1">us-west-1</option>
+                        <option value="eu-west-1">eu-west-1</option>
+                      </select>
+
+                      <lucide-icon
+                        [img]="iconList.ChevronDown"
+                        class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
+                      ></lucide-icon>
+                    </div>
+                  </div>
+                </div>
+              }
             </div>
           </div>
         </div>
