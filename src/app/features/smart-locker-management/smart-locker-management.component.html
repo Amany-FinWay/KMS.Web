@@ -1,0 +1,333 @@
+<div class="mx-auto w-full max-w-[1460px] px-4 py-5">
+  <div class="overflow-hidden rounded-[20px] border border-[#E5E7EB] bg-white shadow-sm">
+    <!-- Header -->
+    <div class="flex flex-col gap-4 border-b border-[#E5E7EB] px-7 py-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="flex h-[52px] w-[52px] items-center justify-center rounded-[14px] bg-gradient-to-br from-[#4F46E5] to-[#6D28D9] shadow-sm">
+          <lucide-icon [img]="icons.Lock" class="h-6 w-6 text-white"></lucide-icon>
+        </div>
+
+        <div>
+          <h2 class="text-[18px] font-semibold leading-none text-[#0F172A]">
+            Smart Locker Management
+          </h2>
+          <p class="mt-2 text-[13px] text-[#475569]">
+            Manage parcel assignments and compartment allocation
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="toggleReplenishmentMode()"
+        class="inline-flex h-[46px] items-center justify-center gap-2 rounded-[14px] border px-6 text-[14px] font-medium transition"
+        [ngClass]="
+          isReplenishmentMode()
+            ? 'border-[#16A34A] bg-[#16A34A] text-white shadow-sm'
+            : 'border-[#CBD5E1] bg-white text-[#334155] hover:bg-slate-50'
+        "
+      >
+        <lucide-icon [img]="icons.Box" class="h-4 w-4"></lucide-icon>
+        {{ isReplenishmentMode() ? 'Exit Replenishment Mode' : 'Replenishment Mode' }}
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="p-6">
+      <div class="grid grid-cols-1 gap-6 xl:grid-cols-[300px_minmax(0,1fr)]">
+        <!-- LEFT SIDEBAR -->
+        <div class="space-y-6">
+          <!-- Select Locker -->
+          <section class="rounded-[18px] border border-[#E5E7EB] bg-white p-5">
+            <h3 class="mb-4 text-[15px] font-semibold text-[#0F172A]">Select Locker</h3>
+
+            <div
+              *ngIf="loadingLockers()"
+              class="rounded-[14px] bg-[#F8FAFC] px-4 py-6 text-center text-[13px] text-slate-500"
+            >
+              Loading lockers...
+            </div>
+
+            <div
+              *ngIf="!loadingLockers() && !lockers().length"
+              class="rounded-[14px] border border-dashed border-[#CBD5E1] bg-[#F8FAFC] px-4 py-8 text-center"
+            >
+              <p class="text-[15px] font-semibold text-[#0F172A]">No Smart Lockers Found</p>
+              <p class="mt-2 text-[13px] leading-6 text-[#64748B]">
+                There are no smart lockers available to display.
+              </p>
+            </div>
+
+            <div *ngIf="!loadingLockers() && lockers().length" class="space-y-3">
+              <div
+                *ngFor="let locker of lockers()"
+                (click)="selectLocker(locker.kioskId)"
+                class="cursor-pointer rounded-[14px] border px-4 py-4 transition"
+                [ngClass]="
+                  selectedLockerId() === locker.kioskId
+                    ? 'border-[#4F46E5] bg-[#EEF2FF] shadow-sm'
+                    : 'border-[#E5E7EB] bg-white hover:border-[#C7D2FE]'
+                "
+              >
+                <div class="flex items-center gap-2.5">
+                  <span class="inline-block h-2.5 w-2.5 rounded-full bg-[#22C55E]"></span>
+
+                  <h4 class="truncate text-[14px] font-semibold text-[#0F172A]">
+                    {{ locker.name }}
+                  </h4>
+                </div>
+
+                <p class="mt-2 text-[13px] text-[#64748B]">
+                  {{ locker.location }}
+                </p>
+
+                <div class="mt-3 flex items-center justify-between text-[13px] text-[#475569]">
+                  <span>Empty: {{ locker.emptyCompartments }}</span>
+                  <span>Assigned: {{ locker.assignedCompartments }}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Actions -->
+          <section
+            *ngIf="hasSelectedLocker()"
+            class="rounded-[18px] border border-[#E5E7EB] bg-white p-5"
+          >
+            <h3 class="mb-4 text-[15px] font-semibold text-[#0F172A]">Actions</h3>
+
+            <div class="space-y-3">
+              <button
+                type="button"
+                (click)="downloadEmptyTemplate()"
+                class="inline-flex h-[50px] w-full items-center justify-center gap-2 rounded-[12px] bg-[#2563EB] px-4 text-[14px] font-medium text-white shadow-sm transition hover:opacity-95"
+              >
+                <lucide-icon [img]="icons.Download" class="h-4 w-4"></lucide-icon>
+                Download Empty Compartments CSV
+              </button>
+
+              <button
+                type="button"
+                (click)="openUploadModal()"
+                class="inline-flex h-[50px] w-full items-center justify-center gap-2 rounded-[12px] bg-[#16A34A] px-4 text-[14px] font-medium text-white shadow-sm transition hover:opacity-95"
+              >
+                <lucide-icon [img]="icons.Upload" class="h-4 w-4"></lucide-icon>
+                Upload Assignment CSV
+              </button>
+            </div>
+          </section>
+
+          <!-- Statistics -->
+          <section
+            *ngIf="hasSelectedLocker()"
+            class="rounded-[18px] border border-[#E5E7EB] bg-white p-5"
+          >
+            <h3 class="mb-5 text-[15px] font-semibold text-[#0F172A]">Statistics</h3>
+
+            <div class="space-y-3.5 text-[13px]">
+              <div class="flex items-center justify-between">
+                <span class="text-[#475569]">Total Compartments</span>
+                <span class="font-semibold text-[#0F172A]">
+                  {{ selectedLockerDetails()?.totalCompartments }}
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <span class="text-[#475569]">Empty</span>
+                <span class="font-semibold text-[#0F172A]">
+                  {{ selectedLockerDetails()?.emptyCompartments }}
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <span class="text-[#475569]">Assigned</span>
+                <span class="font-semibold text-[#2563EB]">
+                  {{ selectedLockerDetails()?.assignedCompartments }}
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <span class="text-[#475569]">Delivered</span>
+                <span class="font-semibold text-[#16A34A]">
+                  {{ selectedLockerDetails()?.deliveredCompartments }}
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between border-t border-[#E5E7EB] pt-4">
+                <span class="text-[#475569]">Occupancy Rate</span>
+                <span class="font-semibold text-[#0F172A]">
+                  {{ selectedLockerDetails()?.occupancyRate }}%
+                </span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- RIGHT CONTENT -->
+        <div class="rounded-[18px] border border-[#E5E7EB] bg-white p-5">
+          <!-- Empty State -->
+          <ng-container *ngIf="!hasSelectedLocker()">
+            <div class="flex min-h-[290px] flex-col items-center justify-center text-center">
+              <lucide-icon [img]="icons.Grid2x2" class="mb-4 h-12 w-12 text-[#9CA3AF]"></lucide-icon>
+
+              <h3 class="text-[20px] font-semibold text-[#0F172A]">
+                No Locker Selected
+              </h3>
+
+              <p class="mt-2 text-[14px] text-[#64748B]">
+                Select a locker from the sidebar to view compartments
+              </p>
+            </div>
+          </ng-container>
+
+          <!-- Locker Details -->
+          <ng-container *ngIf="hasSelectedLocker()">
+            <!-- Grid Header -->
+            <div class="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <h3 class="text-[16px] font-semibold text-[#0F172A]">
+                Compartment Grid - {{ selectedLockerDetails()?.name }}
+              </h3>
+
+              <div class="flex flex-wrap items-center gap-4 text-[12px] text-[#475569]">
+                <div class="flex items-center gap-2">
+                  <span class="h-3.5 w-3.5 rounded-[4px] border border-[#D1D5DB] bg-[#F8FAFC]"></span>
+                  <span>Empty</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <span class="h-3.5 w-3.5 rounded-[4px] border border-[#60A5FA] bg-[#DBEAFE]"></span>
+                  <span>Assigned</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <span class="h-3.5 w-3.5 rounded-[4px] border border-[#22C55E] bg-[#DCFCE7]"></span>
+                  <span>Delivered</span>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="loadingDetails()" class="py-8 text-[13px] text-slate-500">
+              Loading locker details...
+            </div>
+
+            <ng-container *ngIf="!loadingDetails()">
+              <!-- Compartments Grid -->
+              <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
+                <div
+                    *ngFor="let compartment of selectedLockerDetails()?.compartments"
+                    class="relative flex h-[72px] w-full flex-col items-center justify-center rounded-[10px] border text-center"
+                    [ngClass]="getCompartmentCardClass(compartment)"
+                    >
+                  <div class="absolute right-2.5 top-2.5">
+                    <lucide-icon
+                      *ngIf="compartment.status.toLowerCase() === 'assigned'"
+                      [img]="icons.Box"
+                      class="h-3.5 w-3.5 text-[#1D4ED8]"
+                    ></lucide-icon>
+
+                    <lucide-icon
+                      *ngIf="compartment.status.toLowerCase() === 'delivered'"
+                      [img]="icons.CircleCheck"
+                      class="h-3.5 w-3.5 text-[#15803D]"
+                    ></lucide-icon>
+                  </div>
+
+                  <div
+                    class="mb-2 flex h-5 w-5 items-center justify-center rounded-[6px] border"
+                    [ngClass]="getCompartmentTextClass(compartment)"
+                  ></div>
+
+                  <div
+                    class="text-[13px] font-semibold leading-none"
+                    [ngClass]="getCompartmentTextClass(compartment)"
+                  >
+                    {{ compartment.compartmentNumber }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="my-6 h-px bg-[#E5E7EB]"></div>
+
+              <!-- Table -->
+              <div>
+                <h3 class="mb-4 text-[15px] font-semibold text-[#0F172A]">
+                  Compartment Details
+                </h3>
+
+                <div class="overflow-x-auto">
+                  <table class="min-w-full text-left">
+                    <thead>
+                      <tr class="text-[12px] text-[#334155]">
+                        <th class="border-b border-[#E5E7EB] pb-3 pr-4 font-semibold">Compartment</th>
+                        <th class="border-b border-[#E5E7EB] pb-3 pr-4 font-semibold">Size</th>
+                        <th class="border-b border-[#E5E7EB] pb-3 pr-4 font-semibold">Status</th>
+                        <th class="border-b border-[#E5E7EB] pb-3 pr-4 font-semibold">Product</th>
+                        <th class="border-b border-[#E5E7EB] pb-3 pr-4 font-semibold">Customer</th>
+                        <th class="border-b border-[#E5E7EB] pb-3 font-semibold">Assigned</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr
+                        *ngFor="let compartment of selectedLockerDetails()?.compartments"
+                        class="text-[12px] text-[#475569]"
+                      >
+                        <td class="border-b border-[#F1F5F9] py-3 pr-4 text-[#0F172A]">
+                          {{ compartment.compartmentNumber }}
+                        </td>
+
+                        <td class="border-b border-[#F1F5F9] py-3 pr-4">
+                          {{ compartment.size }}
+                        </td>
+
+                        <td class="border-b border-[#F1F5F9] py-3 pr-4">
+                          <span
+                            class="inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize"
+                            [ngClass]="getStatusBadgeClass(compartment.status)"
+                          >
+                            {{ compartment.status }}
+                          </span>
+                        </td>
+
+                        <td class="border-b border-[#F1F5F9] py-3 pr-4">
+                          <div *ngIf="compartment.productName; else noProduct">
+                            <div class="font-semibold text-[#0F172A]">{{ compartment.productName }}</div>
+                            <div class="text-[11px] text-[#64748B]">
+                              {{ compartment.productId ? ('#' + compartment.productId) : '-' }}
+                            </div>
+                          </div>
+                          <ng-template #noProduct>-</ng-template>
+                        </td>
+
+                        <td class="border-b border-[#F1F5F9] py-3 pr-4">
+                          <div *ngIf="compartment.customerName || compartment.customerPhone; else noCustomer">
+                            <div>{{ compartment.customerName || '-' }}</div>
+                            <div class="text-[11px] text-[#64748B]">
+                              {{ compartment.customerPhone || '-' }}
+                            </div>
+                          </div>
+                          <ng-template #noCustomer>-</ng-template>
+                        </td>
+
+                        <td class="border-b border-[#F1F5F9] py-3">
+                          {{ compartment.assignedAt ? (compartment.assignedAt | date: 'M/d/yyyy, h:mm a') : '-' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-smart-locker-upload-modal
+  *ngIf="isUploadModalOpen()"
+  [kioskId]="selectedLockerId()"
+  (close)="closeUploadModal()"
+  (saved)="onUploadSaved()"
+></app-smart-locker-upload-modal>

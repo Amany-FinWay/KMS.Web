@@ -44,6 +44,19 @@ export const routes: Routes = [
             (m) => m.VendingManagementComponent,
           ),
       },
+      {
+        path: 'deployment',
+        loadComponent: () =>
+          import('./features/deployment/deployment.component').then(
+            (m) => m.DeploymentComponent,
+          ),
+      },
+      {
+        path: 'lockers',
+        loadComponent: () =>
+          import('./features/smart-locker-management/smart-locker-management.component')
+            .then((m) => m.SmartLockerManagementComponent),
+      },  
 
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 

@@ -1,0 +1,281 @@
+<div class="rounded-[24px] border border-[#E5E7EB] bg-white px-8 py-7 shadow-sm">
+  <!-- Header -->
+  <div class="mb-14 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+    <div class="flex items-start gap-5">
+      <div class="flex h-[58px] w-[58px] items-center justify-center rounded-[16px] bg-[#E8F0FF]">
+        <lucide-icon [img]="icons.BookOpen" class="h-7 w-7 text-[#2563EB]"></lucide-icon>
+      </div>
+
+      <div>
+        <h2 class="mb-3 text-[22px] font-semibold leading-none text-[#0F172A]">
+          Documentation &amp; Resources
+        </h2>
+        <p class="text-[16px] leading-10 text-[#475569] max-md:leading-8">
+          Access comprehensive guides, manuals, and video tutorials to help you get the most out of the Kiosk Management System.
+        </p>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      (click)="openUploadModal()"
+      class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 text-sm font-medium text-white shadow-sm transition hover:opacity-95"
+    >
+      <lucide-icon [img]="icons.Plus" class="h-4 w-4"></lucide-icon>
+      Upload Documentation
+    </button>
+  </div>
+
+  <div
+    *ngIf="loading()"
+    class="rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFC] px-6 py-10 text-center text-[15px] text-slate-500"
+  >
+    Loading documentation resources...
+  </div>
+
+  <ng-container *ngIf="!loading()">
+    <!-- Getting Started -->
+    <section class="mb-8">
+      <h3 class="mb-5 text-[18px] font-semibold text-[#0F172A]">Getting Started</h3>
+
+      <div
+        *ngIf="!gettingStartedResources().length"
+        class="rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFC] px-6 py-8 text-center text-slate-500"
+      >
+        No getting started resources found.
+      </div>
+
+      <div *ngIf="gettingStartedResources().length" class="grid grid-cols-1 gap-5 xl:grid-cols-3">
+        <div
+          *ngFor="let resource of gettingStartedResources()"
+          class="group rounded-[18px] border border-[#E5E7EB] bg-white px-5 py-5 transition hover:border-[#C4B5FD] hover:shadow-sm"
+        >
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-4">
+              <div class="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[14px] bg-[#F3E8FF]">
+                <lucide-icon [img]="getCardIcon(resource)" class="h-5 w-5 text-[#9333EA]"></lucide-icon>
+              </div>
+
+              <div>
+                <h4 class="text-[16px] font-semibold text-[#0F172A]">{{ resource.title }}</h4>
+                <p class="mt-1 text-[15px] text-[#475569]">{{ resource.description }}</p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              (click)="openResource(resource)"
+              class="mt-auto text-[#94A3B8] transition group-hover:text-[#2563EB]"
+            >
+              <lucide-icon [img]="icons.Download" class="h-5 w-5"></lucide-icon>
+            </button>
+          </div>
+
+          <div class="mt-5">
+            <span class="inline-flex items-center rounded-full border border-[#E5E7EB] bg-white px-3 py-1 text-[13px] font-semibold text-[#0F172A]">
+              {{ getResourceBadge(resource) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- User Guides -->
+    <section class="mb-8">
+      <h3 class="mb-5 text-[18px] font-semibold text-[#0F172A]">User Guides</h3>
+
+      <div
+        *ngIf="!userGuideResources().length"
+        class="rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFC] px-6 py-8 text-center text-slate-500"
+      >
+        No user guide resources found.
+      </div>
+
+      <div *ngIf="userGuideResources().length" class="grid grid-cols-1 gap-5 xl:grid-cols-3">
+        <div
+          *ngFor="let resource of userGuideResources()"
+          class="group rounded-[18px] border border-[#E5E7EB] bg-white px-5 py-5 transition hover:border-[#C4B5FD] hover:shadow-sm"
+        >
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-4">
+              <div class="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[14px] bg-[#F3E8FF]">
+                <lucide-icon [img]="getCardIcon(resource)" class="h-5 w-5 text-[#9333EA]"></lucide-icon>
+              </div>
+
+              <div>
+                <h4 class="text-[16px] font-semibold text-[#0F172A]">{{ resource.title }}</h4>
+                <p class="mt-1 text-[15px] text-[#475569]">{{ resource.description }}</p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              (click)="openResource(resource)"
+              class="mt-auto text-[#94A3B8] transition group-hover:text-[#2563EB]"
+            >
+              <lucide-icon [img]="icons.Download" class="h-5 w-5"></lucide-icon>
+            </button>
+          </div>
+
+          <div class="mt-5">
+            <span class="inline-flex items-center rounded-full border border-[#E5E7EB] bg-white px-3 py-1 text-[13px] font-semibold text-[#0F172A]">
+              {{ getResourceBadge(resource) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Video Tutorials -->
+    <section class="mb-10">
+      <h3 class="mb-5 text-[18px] font-semibold text-[#0F172A]">Video Tutorials</h3>
+
+      <div
+        *ngIf="!videoTutorialResources().length"
+        class="rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFC] px-6 py-8 text-center text-slate-500"
+      >
+        No video tutorial resources found.
+      </div>
+
+      <div *ngIf="videoTutorialResources().length" class="grid grid-cols-1 gap-5 xl:grid-cols-3">
+        <div
+          *ngFor="let resource of videoTutorialResources()"
+          class="group rounded-[18px] border border-[#E5E7EB] bg-white px-5 py-5 transition hover:border-[#93C5FD] hover:shadow-sm"
+        >
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-4">
+              <div class="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[14px] bg-[#F3E8FF]">
+                <lucide-icon [img]="icons.MonitorPlay" class="h-5 w-5 text-[#9333EA]"></lucide-icon>
+              </div>
+
+              <div>
+                <h4 class="text-[16px] font-semibold text-[#0F172A]">{{ resource.title }}</h4>
+                <p class="mt-1 text-[15px] text-[#475569]">{{ getDurationText(resource) }}</p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              (click)="openResource(resource)"
+              class="mt-auto text-[#94A3B8] transition group-hover:text-[#2563EB]"
+            >
+              <lucide-icon [img]="icons.Download" class="h-5 w-5"></lucide-icon>
+            </button>
+          </div>
+
+          <div class="mt-5">
+            <span class="inline-flex items-center rounded-full border border-[#E5E7EB] bg-white px-3 py-1 text-[13px] font-semibold text-[#0F172A]">
+              {{ getResourceBadge(resource) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mb-10 h-px bg-[#E5E7EB]"></div>
+
+    <!-- Additional Support -->
+    <section class="mb-8">
+      <h3 class="mb-5 text-[18px] font-semibold text-[#0F172A]">Additional Support</h3>
+
+      <div
+        *ngIf="!additionalSupportResources().length"
+        class="rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFC] px-6 py-8 text-center text-slate-500"
+      >
+        No additional support resources found.
+      </div>
+
+      <div *ngIf="additionalSupportResources().length" class="grid grid-cols-1 gap-5 xl:grid-cols-3">
+        <div
+          *ngFor="let resource of additionalSupportResources()"
+          class="rounded-[18px] border border-[#E5E7EB] bg-white px-5 py-5 transition hover:border-[#93C5FD] hover:shadow-sm"
+        >
+          <div class="mb-4 flex items-start gap-4">
+            <div
+              class="flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-[10px]"
+              [ngClass]="{
+                'bg-[#DBEAFE]': isApiDocumentation(resource),
+                'bg-[#F3E8FF]': isExternalLink(resource),
+                'bg-[#E0F2FE]': !isExternalLink(resource) && !isApiDocumentation(resource)
+              }"
+            >
+              <lucide-icon
+                [img]="getAdditionalSupportIcon(resource)"
+                class="h-4 w-4"
+                [ngClass]="{
+                  'text-[#16A34A]': isApiDocumentation(resource),
+                  'text-[#9333EA]': isExternalLink(resource),
+                  'text-[#2563EB]': !isExternalLink(resource) && !isApiDocumentation(resource)
+                }"
+              ></lucide-icon>
+            </div>
+
+            <div>
+              <h4 class="text-[16px] font-semibold text-[#0F172A]">{{ resource.title }}</h4>
+              <p class="mt-2 text-[15px] leading-7 text-[#475569]">
+                {{ resource.description }}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            (click)="openResource(resource)"
+            class="text-[15px] font-semibold text-[#2563EB] transition hover:opacity-80"
+          >
+            {{
+              isApiDocumentation(resource)
+                ? 'View API Docs →'
+                : isExternalLink(resource)
+                ? 'Visit Resource →'
+                : 'Open Resource →'
+            }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Need Technical Support -->
+    <section class="rounded-[18px] border border-[#BFDBFE] bg-[#F5F3FF] px-7 py-7">
+      <div class="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+        <div>
+          <h3 class="text-[18px] font-semibold text-[#0F172A]">Need Technical Support?</h3>
+          <p class="mt-3 text-[16px] text-[#475569]">
+            Our support team is available 24/7 to help you with any issues or questions.
+          </p>
+
+          <div class="mt-6 space-y-3 text-[15px] text-[#334155]">
+            <div class="flex items-center gap-3">
+              <lucide-icon [img]="icons.Mail" class="h-4 w-4 text-[#64748B]"></lucide-icon>
+              <span>Email: support&#64;kioskmanager.com</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <lucide-icon [img]="icons.Phone" class="h-4 w-4 text-[#EC4899]"></lucide-icon>
+              <span>Phone: +1 (800) 555-0199</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <lucide-icon [img]="icons.MessageCircle" class="h-4 w-4 text-[#A78BFA]"></lucide-icon>
+              <span>Live Chat: Available in dashboard</span>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          (click)="contactSupport()"
+          class="inline-flex h-[40px] shrink-0 items-center justify-center rounded-[12px] bg-[#020617] px-6 text-[15px] font-semibold text-white transition hover:opacity-95"
+        >
+          Contact Support
+        </button>
+      </div>
+    </section>
+  </ng-container>
+</div>
+
+<app-documentation-upsert-modal
+  *ngIf="isModalOpen()"
+  (close)="closeModal()"
+  (saved)="onSaved()"
+></app-documentation-upsert-modal>
