@@ -156,14 +156,14 @@ export class SmartLockerManagementComponent implements OnInit {
     const status = (compartment.status || '').toLowerCase();
 
     if (status === 'assigned') {
-      return 'border-[#60A5FA] bg-[#DBEAFE]';
+      return 'border-[#5B9BFF] bg-[#DCEAFE]';
     }
 
     if (status === 'delivered') {
-      return 'border-[#22C55E] bg-[#DCFCE7]';
+      return 'border-[#12D66A] bg-[#DDF9E7]';
     }
 
-    return 'border-[#D1D5DB] bg-[#F8FAFC]';
+    return 'border-[#D5DCE5] bg-[#F8FAFC]';
   }
 
   getCompartmentTextClass(compartment: SmartLockerCompartmentDto): string {
