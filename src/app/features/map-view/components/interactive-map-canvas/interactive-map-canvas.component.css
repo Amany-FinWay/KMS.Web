@@ -1,0 +1,15 @@
+:host {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  min-height: 100%;
+}
+
+.map-grid {
+  background-color: #f8fafc;
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+}

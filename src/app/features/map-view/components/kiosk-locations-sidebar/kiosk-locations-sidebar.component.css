@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  flex: 0 0 430px;
+  min-width: 430px;
+}
+
+.map-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #98a2b3 transparent;
+}
+
+.map-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.map-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.map-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: #98a2b3;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}

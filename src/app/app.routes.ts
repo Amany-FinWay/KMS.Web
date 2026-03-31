@@ -23,6 +23,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'map',
+        loadComponent: () =>
+          import('./features/map-view/map-view.component').then(
+            (m) => m.MapViewComponent,
+          ),
+      },
+      {
         path: 'admin',
         loadComponent: () =>
           import('./features/user-admin/user-admin.component').then(
