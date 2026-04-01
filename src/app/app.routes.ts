@@ -66,11 +66,25 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'reports',
+        loadComponent: () =>
+          import('./features/reports/reports.component').then(
+            (m) => m.ReportsComponent,
+          ),
+      },
+      {
         path: 'lockers',
         loadComponent: () =>
           import('./features/smart-locker-management/smart-locker-management.component')
             .then((m) => m.SmartLockerManagementComponent),
-      },  
+      },
+      {
+        path: 'digital-signage',
+        loadComponent: () =>
+          import('./features/digital-signage/digital-signage.component').then(
+            (m) => m.DigitalSignageComponent,
+          ),
+      },
 
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 

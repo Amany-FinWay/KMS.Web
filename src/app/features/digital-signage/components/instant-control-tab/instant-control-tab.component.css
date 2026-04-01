@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+
+.placeholder-shell {
+  display: grid;
+  gap: 24px;
+}
+
+.placeholder-card,
+.placeholder-mini-card {
+  background: #fff;
+  border: 1px solid #d9dfea;
+  border-radius: 20px;
+}
+
+.placeholder-card {
+  padding: 32px;
+}
+
+.placeholder-icon {
+  align-items: center;
+  border-radius: 18px;
+  display: inline-flex;
+  height: 64px;
+  justify-content: center;
+  width: 64px;
+}
+
+.placeholder-title {
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+.placeholder-text {
+  color: #475467;
+  font-size: 16px;
+  margin-top: 12px;
+}
+
+.placeholder-mini-card {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  min-height: 84px;
+  padding: 0 22px;
+}

@@ -1,0 +1,132 @@
+<div class="space-y-7">
+  <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+    <article class="flex min-h-[104px] items-center justify-between rounded-[16px] border border-[#D9DFEA] bg-white px-7 py-5 shadow-[0_1px_2px_rgba(16,24,40,0.02)]">
+      <div>
+        <p class="text-[13px] font-normal text-[#344054]">Total Schedules</p>
+        <p class="mt-2 text-[36px] font-semibold leading-none text-[#00153D]">{{ stats.totalSchedules }}</p>
+      </div>
+
+      <div class="inline-flex h-[52px] w-[52px] items-center justify-center rounded-[15px] bg-[#D9E9FF] text-[#2563EB]">
+        <lucide-icon [img]="icons.CalendarDays" class="h-6 w-6"></lucide-icon>
+      </div>
+    </article>
+
+    <article class="flex min-h-[104px] items-center justify-between rounded-[16px] border border-[#D9DFEA] bg-white px-7 py-5 shadow-[0_1px_2px_rgba(16,24,40,0.02)]">
+      <div>
+        <p class="text-[13px] font-normal text-[#344054]">Active Now</p>
+        <p class="mt-2 text-[36px] font-semibold leading-none text-[#16A34A]">{{ stats.activeNow }}</p>
+      </div>
+
+      <div class="inline-flex h-[52px] w-[52px] items-center justify-center rounded-[15px] bg-[#D9FBE8] text-[#16A34A]">
+        <lucide-icon [img]="icons.Play" class="h-6 w-6"></lucide-icon>
+      </div>
+    </article>
+
+    <article class="flex min-h-[104px] items-center justify-between rounded-[16px] border border-[#D9DFEA] bg-white px-7 py-5 shadow-[0_1px_2px_rgba(16,24,40,0.02)]">
+      <div>
+        <p class="text-[13px] font-normal text-[#344054]">Scheduled</p>
+        <p class="mt-2 text-[36px] font-semibold leading-none text-[#2563EB]">{{ stats.scheduled }}</p>
+      </div>
+
+      <div class="inline-flex h-[52px] w-[52px] items-center justify-center rounded-[15px] bg-[#D9E9FF] text-[#2563EB]">
+        <lucide-icon [img]="icons.Clock3" class="h-6 w-6"></lucide-icon>
+      </div>
+    </article>
+  </div>
+
+  <section class="rounded-[18px] border border-[#D9DFEA] bg-white px-7 py-7 shadow-[0_1px_3px_rgba(16,24,40,0.03)]">
+    <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+      <div>
+        <h2 class="text-[17px] font-semibold text-[#00153D]">Content Schedules</h2>
+        <p class="mt-2 text-[13px] text-[#475467]">Plan when content appears on digital screens</p>
+      </div>
+
+      <button
+        type="button"
+        class="inline-flex h-[50px] items-center justify-center gap-2.5 rounded-[14px] bg-[#2563EB] px-6 text-[14px] font-medium text-white transition hover:bg-[#1D4ED8]"
+      >
+        <lucide-icon [img]="icons.Plus" class="h-4 w-4"></lucide-icon>
+        Create Schedule
+      </button>
+    </div>
+
+    <div class="mt-8 space-y-5">
+      <article
+        *ngFor="let schedule of schedules"
+        class="rounded-[16px] border border-[#D9DFEA] bg-white px-5 py-5 shadow-[0_1px_3px_rgba(16,24,40,0.02)]"
+      >
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-3">
+              <h3 class="text-[16px] font-semibold text-[#00153D]">{{ schedule.title }}</h3>
+
+              <span
+                class="inline-flex rounded-full px-3 py-[5px] text-[12px] font-medium capitalize"
+                [ngClass]="getStatusBadgeClass(schedule.status)"
+              >
+                {{ schedule.status }}
+              </span>
+
+              <span
+                class="inline-flex rounded-full px-3 py-[5px] text-[12px] font-medium"
+                [ngClass]="getPriorityBadgeClass(schedule.priority)"
+              >
+                {{ schedule.priority }}
+              </span>
+            </div>
+
+            <p class="mt-3 text-[13px] text-[#667085]">
+              Content:
+              <span class="ml-1 font-semibold text-[#00153D]">{{ schedule.contentName }}</span>
+              <span class="ml-1 text-[12px] uppercase text-[#98A2B3]">({{ schedule.contentType }})</span>
+            </p>
+          </div>
+
+          <div class="flex items-center gap-6 text-[#667085]">
+            <button type="button" class="transition hover:text-[#334155]">
+              <lucide-icon [img]="schedule.status === 'active' ? icons.Pause : icons.Play" class="h-5 w-5"></lucide-icon>
+            </button>
+            <button type="button" class="transition hover:text-[#334155]">
+              <lucide-icon [img]="icons.Pencil" class="h-5 w-5"></lucide-icon>
+            </button>
+            <button type="button" class="transition hover:text-[#DC2626]">
+              <lucide-icon [img]="icons.Trash2" class="h-5 w-5 text-[#FF0000]"></lucide-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-5 grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2 xl:grid-cols-4">
+          <div>
+            <p class="text-[13px] text-[#667085]">Date Range:</p>
+            <p class="mt-2 text-[13px] font-semibold text-[#00153D]">{{ schedule.dateRange }}</p>
+          </div>
+
+          <div>
+            <p class="text-[13px] text-[#667085]">Time Range:</p>
+            <p class="mt-2 text-[13px] font-semibold text-[#00153D]">{{ schedule.timeRange }}</p>
+          </div>
+
+          <div>
+            <p class="text-[13px] text-[#667085]">Days:</p>
+            <p class="mt-2 text-[13px] font-semibold text-[#00153D]">{{ schedule.days }}</p>
+          </div>
+
+          <div>
+            <p class="text-[13px] text-[#667085]">Screen Groups:</p>
+            <p class="mt-2 text-[13px] font-semibold text-[#00153D]">{{ schedule.screenGroupsText }}</p>
+          </div>
+        </div>
+
+        <div class="mt-5 flex flex-wrap gap-3">
+          <span
+            *ngFor="let group of schedule.groups"
+            class="inline-flex rounded-full px-4 py-[6px] text-[12px] font-semibold text-white"
+            [ngClass]="getGroupBadgeClass(group)"
+          >
+            {{ group }}
+          </span>
+        </div>
+      </article>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,71 @@
+<div class="fixed inset-0 z-[85] flex h-full w-full items-center justify-center bg-[rgba(15,23,42,0.55)] p-6" (click)="close.emit()">
+  <div class="max-h-[calc(100vh-48px)] w-full max-w-[920px] overflow-y-auto rounded-[24px] bg-white p-7 shadow-[0_24px_48px_rgba(15,23,42,0.18)]" (click)="$event.stopPropagation()">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h3 class="text-[24px] font-semibold text-[#0F172A]">{{ media?.title }}</h3>
+        <p class="mt-2 text-[15px] text-[#667085]">{{ media?.description || media?.originalFileName }}</p>
+      </div>
+
+      <button type="button" (click)="close.emit()" class="inline-flex h-[42px] w-[42px] items-center justify-center rounded-[12px] bg-[#F8FAFC] text-[#475467]">
+        <lucide-icon [img]="icons.X" class="h-5 w-5"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="mt-7 flex min-h-[320px] items-center justify-center rounded-[24px] bg-[linear-gradient(135deg,#f8fafc_0%,#eef2ff_100%)] p-5">
+      <img *ngIf="isImage() && previewObjectUrl()" [src]="previewObjectUrl()" [alt]="media?.title" class="max-h-[440px] max-w-full rounded-[18px] object-contain" />
+      <video *ngIf="isVideo() && previewObjectUrl()" [src]="previewObjectUrl()" controls class="max-h-[440px] w-full rounded-[18px] bg-black"></video>
+
+      <div *ngIf="!isImage() && !isVideo() && previewResourceUrl()" class="h-[520px] w-full overflow-hidden rounded-[18px] bg-white shadow-sm">
+        <iframe [src]="previewResourceUrl()" class="h-full w-full border-0"></iframe>
+      </div>
+
+      <div *ngIf="!isImage() && !isVideo() && !previewResourceUrl()" class="flex flex-col items-center gap-4 text-center">
+        <div class="flex h-20 w-20 items-center justify-center rounded-[22px] bg-white text-[#2563EB] shadow-sm">
+          <lucide-icon [img]="icons.FileText" class="h-10 w-10"></lucide-icon>
+        </div>
+        <p class="text-[18px] font-semibold text-[#0F172A]">{{ media?.originalFileName }}</p>
+        <p class="max-w-[540px] text-[15px] text-[#667085]">
+          Unable to preview this file inline. You can still open or download it below.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-7 grid grid-cols-2 gap-4 rounded-[18px] bg-[#F8FAFC] p-5 md:grid-cols-4">
+      <div>
+        <p class="text-[13px] text-[#667085]">Type</p>
+        <p class="mt-2 text-[15px] font-semibold text-[#0F172A]">{{ media?.contentTypeName }}</p>
+      </div>
+      <div>
+        <p class="text-[13px] text-[#667085]">Size</p>
+        <p class="mt-2 text-[15px] font-semibold text-[#0F172A]">{{ media?.fileSizeFormatted }}</p>
+      </div>
+      <div>
+        <p class="text-[13px] text-[#667085]">{{ shouldShowDuration() ? 'Duration' : 'File Name' }}</p>
+        <p class="mt-2 text-[15px] font-semibold text-[#0F172A]">
+          {{ shouldShowDuration() ? (media?.durationFormatted || '--') : media?.originalFileName }}
+        </p>
+      </div>
+      <div>
+        <p class="text-[13px] text-[#667085]">Created</p>
+        <p class="mt-2 text-[15px] font-semibold text-[#0F172A]">{{ media?.createdAt | date:'mediumDate' }}</p>
+      </div>
+    </div>
+
+    <div class="mt-6 flex flex-wrap items-center gap-2">
+      <span *ngFor="let tag of media?.tags" class="rounded-[8px] bg-[#F2F4F7] px-3 py-1.5 text-[14px] text-[#475467]">
+        {{ tag }}
+      </span>
+    </div>
+
+    <div class="mt-8 flex items-center justify-end gap-3">
+      <button type="button" class="inline-flex min-h-[46px] items-center gap-2 rounded-[14px] border border-[#D0D5DD] bg-white px-[18px] text-[#344054]" (click)="openFile()">
+        <lucide-icon [img]="icons.ExternalLink" class="h-4 w-4"></lucide-icon>
+        Open File
+      </button>
+      <button type="button" class="inline-flex min-h-[46px] items-center gap-2 rounded-[14px] bg-[#2563EB] px-[18px] text-white" (click)="downloadFile()">
+        <lucide-icon [img]="icons.Download" class="h-4 w-4"></lucide-icon>
+        Download
+      </button>
+    </div>
+  </div>
+</div>

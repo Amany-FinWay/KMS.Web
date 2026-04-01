@@ -1,0 +1,145 @@
+<div class="space-y-8">
+  <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+    <article class="flex min-h-[118px] items-center justify-between rounded-[16px] border border-[#D9DFEA] bg-white px-6 py-5 shadow-[0_1px_2px_rgba(16,24,40,0.02)]">
+      <div>
+        <p class="text-[14px] font-normal text-[#344054]">Total Files</p>
+        <p class="mt-2 text-[38px] font-semibold leading-none text-[#00153D]">{{ stats().totalFiles }}</p>
+      </div>
+      <div class="inline-flex h-[56px] w-[56px] items-center justify-center rounded-[16px] bg-[#D9E9FF] text-[#2563EB]">
+        <lucide-icon [img]="icons.FileText" class="h-6 w-6"></lucide-icon>
+      </div>
+    </article>
+
+    <article class="flex min-h-[118px] items-center justify-between rounded-[16px] border border-[#D9DFEA] bg-white px-6 py-5 shadow-[0_1px_2px_rgba(16,24,40,0.02)]">
+      <div>
+        <p class="text-[14px] font-normal text-[#344054]">Images</p>
+        <p class="mt-2 text-[38px] font-semibold leading-none text-[#8B2CF5]">{{ stats().imagesCount }}</p>
+      </div>
+      <div class="inline-flex h-[56px] w-[56px] items-center justify-center rounded-[16px] bg-[#F2E2FF] text-[#8B2CF5]">
+        <lucide-icon [img]="icons.Image" class="h-6 w-6"></lucide-icon>
+      </div>
+    </article>
+
+    <article class="flex min-h-[118px] items-center justify-between rounded-[16px] border border-[#D9DFEA] bg-white px-6 py-5 shadow-[0_1px_2px_rgba(16,24,40,0.02)]">
+      <div>
+        <p class="text-[14px] font-normal text-[#344054]">Videos</p>
+        <p class="mt-2 text-[38px] font-semibold leading-none text-[#2563EB]">{{ stats().videosCount }}</p>
+      </div>
+      <div class="inline-flex h-[56px] w-[56px] items-center justify-center rounded-[16px] bg-[#D9E9FF] text-[#2563EB]">
+        <lucide-icon [img]="icons.Video" class="h-6 w-6"></lucide-icon>
+      </div>
+    </article>
+
+    <article class="flex min-h-[118px] items-center justify-between rounded-[16px] border border-[#D9DFEA] bg-white px-6 py-5 shadow-[0_1px_2px_rgba(16,24,40,0.02)]">
+      <div>
+        <p class="text-[14px] font-normal text-[#344054]">Documents</p>
+        <p class="mt-2 text-[38px] font-semibold leading-none text-[#F55B04]">{{ stats().documentsCount }}</p>
+      </div>
+      <div class="inline-flex h-[56px] w-[56px] items-center justify-center rounded-[16px] bg-[#FFF1DE] text-[#F55B04]">
+        <lucide-icon [img]="icons.Monitor" class="h-6 w-6"></lucide-icon>
+      </div>
+    </article>
+  </div>
+
+  <section class="rounded-[18px] border border-[#D9DFEA] bg-white px-8 py-7 shadow-[0_1px_3px_rgba(16,24,40,0.03)]">
+    <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+      <h2 class="text-[18px] font-semibold text-[#00153D]">Media Library</h2>
+
+      <button type="button" (click)="openUploadModal()" class="inline-flex h-[48px] items-center justify-center gap-2.5 rounded-[14px] bg-[#2563EB] px-[20px] text-[14px] font-medium text-white transition hover:bg-[#1D4ED8]">
+        <lucide-icon [img]="icons.Upload" class="h-4 w-4"></lucide-icon>
+        Upload Content
+      </button>
+    </div>
+
+    <div class="mt-7 flex flex-col gap-4 xl:flex-row">
+      <label class="flex h-[50px] flex-1 items-center gap-3 rounded-[14px] border border-[#CAD3E0] bg-white px-4">
+        <lucide-icon [img]="icons.Search" class="h-[22px] w-[22px] text-[#98A2B3]"></lucide-icon>
+        <input type="text" class="min-w-0 flex-1 border-0 bg-transparent text-[14px] text-[#0F172A] outline-none placeholder:text-[#98A2B3]" placeholder="Search content..." [ngModel]="searchTerm()" (ngModelChange)="onSearchChange($event)" />
+      </label>
+
+      <div class="relative w-full xl:w-[182px]">
+        <button type="button" (click)="toggleTypeMenu($event)" class="inline-flex h-[50px] w-full items-center justify-between rounded-[14px] border bg-white px-4 text-left text-[14px]" [ngClass]="isTypeMenuOpen() ? 'border-[2px] border-[#3B82F6]' : 'border-[#CAD3E0]'">
+          <span class="flex items-center gap-3">
+            <lucide-icon [img]="icons.Filter" class="h-[21px] w-[21px] text-[#98A2B3]"></lucide-icon>
+            {{ getSelectedFilterLabel() }}
+          </span>
+        </button>
+
+        <div *ngIf="isTypeMenuOpen()" class="absolute left-0 right-0 top-full z-20 mt-1 overflow-hidden border border-[#D0D5DD] bg-white shadow-[0_12px_24px_rgba(16,24,40,0.12)]">
+          <button *ngFor="let option of filterOptions" type="button" (click)="setType(option.value)" class="block w-full px-[18px] py-[11px] text-left text-[14px] text-[#101828] hover:bg-[#F8FAFC]" [ngClass]="option.value === selectedType() ? 'bg-[#808080] text-white hover:bg-[#808080]' : ''">
+            {{ option.label }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!filteredItems().length" class="mt-8 flex min-h-[200px] items-center justify-center rounded-[18px] border border-dashed border-[#D0D5DD] text-[15px] text-[#667085]">No media content found for the current filters.</div>
+
+    <div *ngIf="filteredItems().length" class="mt-7 grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <article *ngFor="let item of filteredItems()" class="overflow-hidden rounded-[16px] border border-[#D9DFEA] bg-white shadow-[0_1px_3px_rgba(16,24,40,0.03)]">
+        <div class="relative h-[192px] overflow-hidden bg-[#EEF2F7]">
+          <img *ngIf="hasVisualPreview(item)" [src]="getPreviewImageUrl(item)" [alt]="item.title" class="h-full w-full object-cover" />
+
+          <div *ngIf="!hasVisualPreview(item)" class="flex h-full flex-col items-center justify-center bg-[linear-gradient(135deg,#F8FAFC_0%,#EEF2FF_100%)] px-6 text-center">
+            <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/80 text-[#2563EB] shadow-sm">
+              <lucide-icon [img]="getCardTypeIcon(item)" class="h-8 w-8"></lucide-icon>
+            </div>
+            <p class="line-clamp-2 text-[22px] font-semibold text-[#0F172A]">{{ item.title }}</p>
+          </div>
+
+          <span class="absolute right-[14px] top-[14px] inline-flex items-center gap-1.5 rounded-full px-[11px] py-[7px] text-[11px] font-semibold leading-none" [ngClass]="getCardTypeClass(item)">
+            <lucide-icon [img]="getCardTypeIcon(item)" class="h-[13px] w-[13px]"></lucide-icon>
+            {{ getCardTypeLabel(item) }}
+          </span>
+        </div>
+
+        <div class="px-[18px] pb-4 pt-4">
+          <h3 class="text-[15px] font-semibold leading-[1.35] text-[#00153D]">{{ item.title }}</h3>
+
+          <div class="mt-4 grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-[13px] font-normal text-[#667085]">
+                {{ shouldShowDuration(item) ? 'Duration:' : 'Type:' }}
+              </p>
+              <p class="mt-1 text-[13px] font-semibold text-[#00153D]">
+                {{ shouldShowDuration(item) ? (item.durationFormatted || '--') : item.contentTypeName }}
+              </p>
+            </div>
+            <div>
+              <p class="text-[13px] font-normal text-[#667085]">Size:</p>
+              <p class="mt-1 text-[13px] font-semibold text-[#00153D]">{{ item.fileSizeFormatted }}</p>
+            </div>
+          </div>
+
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span *ngFor="let tag of item.tags" class="rounded-[5px] bg-[#F2F4F7] px-[10px] py-[4px] text-[11px] text-[#475467]">
+              {{ tag }}
+            </span>
+          </div>
+
+          <div class="mt-4 border-t border-[#EAECF0] pt-3.5">
+            <div class="flex items-center justify-between gap-3">
+              <button type="button" (click)="openPreview(item)" class="inline-flex items-center gap-2 text-[13px] font-medium text-[#1D4ED8] transition hover:text-[#1E40AF]">
+                <lucide-icon [img]="icons.Eye" class="h-4 w-4"></lucide-icon>
+                Preview
+              </button>
+
+              <div class="flex items-center gap-6 text-[#475467]">
+                <button type="button" (click)="downloadMedia(item)" class="transition hover:text-[#1D4ED8]" title="Download">
+                  <lucide-icon [img]="icons.Download" class="h-4 w-4"></lucide-icon>
+                </button>
+
+                <button type="button" (click)="deleteMedia(item)" class="transition hover:text-[#DC2626]" title="Delete" [disabled]="deletingId() === item.id">
+                  <lucide-icon [img]="icons.Trash2" class="h-4 w-4 text-[#FF0000]"></lucide-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+</div>
+
+<app-media-upload-modal *ngIf="isUploadModalOpen()" (close)="closeUploadModal()" (saved)="onMediaUploaded()"></app-media-upload-modal>
+<app-media-preview-modal *ngIf="isPreviewModalOpen() && selectedMediaDetails()" [media]="selectedMediaDetails()" (close)="closePreviewModal()"></app-media-preview-modal>

@@ -5,8 +5,11 @@ import { finalize, catchError, throwError } from 'rxjs';
 
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const service = inject(SpinnerToasterService);
+  const skipSpinner = req.headers.has('X-Skip-Spinner');
 
-  service.showSpinner();
+  if (!skipSpinner) {
+    service.showSpinner();
+  }
 
   return next(req).pipe(
     catchError((error) => {
@@ -15,7 +18,9 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
       return throwError(() => error);
     }),
     finalize(() => {
-      service.hideSpinner();
+      if (!skipSpinner) {
+        service.hideSpinner();
+      }
     }),
   );
 };
