@@ -193,7 +193,7 @@
 // }
 // }
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -213,6 +213,7 @@ import { KioskDto, KioskFilterDto, PagedResult } from '../models/models/kioskGen
 export class DeploymentService {
   private http = inject(HttpClient);
   private base = '/api/DeploymentTab';
+  private silentRequestHeaders = new HttpHeaders({ 'X-Skip-Spinner': 'true' });
 
   // =========================
   // Kiosk Agent
@@ -221,14 +222,16 @@ export class DeploymentService {
   getAgentPackages(): Observable<ApiResponse<AgentPackageListDto[]>> {
     return this.http.post<ApiResponse<AgentPackageListDto[]>>(
       `${this.base}/get-all-agents`,
-      {}
+      {},
+      { headers: this.silentRequestHeaders }
     );
   }
 
   getAgentById(id: number): Observable<ApiResponse<AgentPackageListDto>> {
     return this.http.post<ApiResponse<AgentPackageListDto>>(
       `${this.base}/get-agent-${id}`,
-      {}
+      {},
+      { headers: this.silentRequestHeaders }
     );
   }
 
@@ -253,14 +256,16 @@ export class DeploymentService {
   getAllDeploymentPackages(): Observable<ApiResponse<DeploymentPackageListDto[]>> {
     return this.http.post<ApiResponse<DeploymentPackageListDto[]>>(
       `${this.base}/get-all-deployment-packages`,
-      {}
+      {},
+      { headers: this.silentRequestHeaders }
     );
   }
 
   getDeploymentPackageById(id: number): Observable<ApiResponse<DeploymentPackageListDto>> {
     return this.http.post<ApiResponse<DeploymentPackageListDto>>(
       `${this.base}/get-deployment-package-${id}`,
-      {}
+      {},
+      { headers: this.silentRequestHeaders }
     );
   }
 
@@ -285,14 +290,16 @@ export class DeploymentService {
   getAllJobs(): Observable<ApiResponse<DeploymentJobListDto[]>> {
     return this.http.post<ApiResponse<DeploymentJobListDto[]>>(
       `${this.base}/get-all-jobs`,
-      {}
+      {},
+      { headers: this.silentRequestHeaders }
     );
   }
 
   getJobById(id: number): Observable<ApiResponse<DeploymentJobDetailsDto>> {
     return this.http.post<ApiResponse<DeploymentJobDetailsDto>>(
       `${this.base}/get-job-${id}`,
-      {}
+      {},
+      { headers: this.silentRequestHeaders }
     );
   }
 
@@ -321,7 +328,8 @@ export class DeploymentService {
   getAllDocumentationResources(): Observable<ApiResponse<DocumentationResourceListDto[]>> {
     return this.http.post<ApiResponse<DocumentationResourceListDto[]>>(
       `${this.base}/get-all-documenation-resources`,
-      {}
+      {},
+      { headers: this.silentRequestHeaders }
     );
   }
 
@@ -335,7 +343,8 @@ export class DeploymentService {
   getDocumentationResourceById(id: number): Observable<ApiResponse<DocumentationResourceListDto>> {
     return this.http.post<ApiResponse<DocumentationResourceListDto>>(
       `${this.base}/get-documenation-resource-${id}`,
-      {}
+      {},
+      { headers: this.silentRequestHeaders }
     );
   }
 
@@ -353,7 +362,8 @@ export class DeploymentService {
   getAllKiosks(filter: KioskFilterDto): Observable<ApiResponse<PagedResult<KioskDto>>> {
     return this.http.post<ApiResponse<PagedResult<KioskDto>>>(
       `/api/KioskDashboard/get-all`,
-      filter
+      filter,
+      { headers: this.silentRequestHeaders }
     );
   }
 
@@ -368,6 +378,7 @@ export class DeploymentService {
 
     this.http
       .get(`/api/Files/download?path=${encodedPath}`, {
+        headers: this.silentRequestHeaders,
         responseType: 'blob',
       })
       .subscribe({
