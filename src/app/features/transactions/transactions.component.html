@@ -1,0 +1,47 @@
+<div class="min-h-screen bg-[#F8FAFC] text-slate-900">
+  <div class="border-b border-[#E4E7EC] bg-white">
+    <div class="mx-auto max-w-[1440px] px-8 py-9">
+      <div class="flex items-start gap-4">
+        <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-b from-[#4F46E5] to-[#4338CA] shadow-sm">
+          <lucide-icon [img]="icons.CircleDollarSign" class="h-7 w-7 text-white"></lucide-icon>
+        </div>
+
+        <div>
+          <h1 class="text-[28px] font-semibold leading-8 text-slate-950">
+            Sales & CRM
+          </h1>
+          <p class="mt-2 text-[16px] text-slate-600">
+            Manage transactions and customer relationships
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-[1440px] px-8 py-8">
+    <div *ngIf="loading()" class="py-10 text-[14px] text-slate-500">Loading transactions dashboard...</div>
+
+    <ng-container *ngIf="!loading()">
+      <app-transactions-summary-cards [summary]="summary()"></app-transactions-summary-cards>
+
+      <div class="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <app-revenue-type-chart [items]="revenueByType()"></app-revenue-type-chart>
+        <app-transaction-status-chart [items]="statusChart()"></app-transaction-status-chart>
+      </div>
+
+      <div class="mt-8">
+        <app-transactions-data-panel
+          [activeTab]="activeTab()"
+          [searchTerm]="searchTerm()"
+          [statusFilter]="statusFilter()"
+          [transactions]="transactions()"
+          [customers]="customers()"
+          (activeTabChange)="setActiveTab($event)"
+          (searchTermChange)="setSearchTerm($event)"
+          (statusFilterChange)="setStatusFilter($event)"
+          (exportRequested)="exportCsv($event)"
+        ></app-transactions-data-panel>
+      </div>
+    </ng-container>
+  </div>
+</div>

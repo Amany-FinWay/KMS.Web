@@ -1,0 +1,32 @@
+<section class="rounded-[18px] border border-[#E4E7EC] bg-white p-7">
+  <h3 class="text-[18px] font-semibold text-[#101828]">Revenue by Transaction Type</h3>
+
+  <div class="mt-8 flex min-h-[290px] gap-4">
+    <div class="flex w-[58px] flex-col justify-between pb-8 text-right text-[13px] text-[#667085]">
+      <span *ngFor="let value of axisValues()">
+        {{ value }}
+      </span>
+    </div>
+
+    <div class="relative flex-1 border-l border-b border-[#98A2B3]">
+      <div class="absolute inset-0 flex flex-col justify-between">
+        <div *ngFor="let _ of axisValues()" class="border-t border-dashed border-[#D0D5DD]"></div>
+      </div>
+
+      <div class="relative z-10 flex h-full items-end gap-5 px-3 pb-8 pt-4">
+        <div *ngFor="let item of chartItems()" class="flex min-w-0 flex-1 flex-col items-center gap-3">
+          <div class="flex h-[210px] w-full items-end">
+            <div
+              class="w-full rounded-t-[2px] bg-[#3F7AE0]"
+              [style.height.%]="item.height"
+              [title]="item.revenue | currency:'USD':'symbol':'1.0-0'"
+            ></div>
+          </div>
+          <div class="w-full text-center text-[13px] leading-5 text-[#667085]">
+            {{ item.type }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

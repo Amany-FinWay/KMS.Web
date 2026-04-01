@@ -30,6 +30,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'transactions',
+        loadComponent: () =>
+          import('./features/transactions/transactions.component').then(
+            (m) => m.TransactionsComponent,
+          ),
+      },
+      {
         path: 'admin',
         loadComponent: () =>
           import('./features/user-admin/user-admin.component').then(
