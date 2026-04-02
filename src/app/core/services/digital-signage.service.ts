@@ -81,7 +81,7 @@ export class DigitalSignageService {
       return path;
     }
 
-    return `/media/${path.replace(/^\/+/, '')}`;
+    return this.getMediaDownloadUrl(path);
   }
 
   getMediaDownloadUrl(path?: string | null): string {

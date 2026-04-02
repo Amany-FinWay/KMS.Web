@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   Download,
@@ -29,7 +29,7 @@ import { MediaUploadModalComponent } from './components/media-upload-modal/media
   templateUrl: './content-library-tab.component.html',
   styleUrl: './content-library-tab.component.css',
 })
-export class ContentLibraryTabComponent implements OnInit {
+export class ContentLibraryTabComponent implements OnInit, OnDestroy {
   private digitalSignageService = inject(DigitalSignageService);
   private spinnerToasterService = inject(SpinnerToasterService);
 
@@ -73,6 +73,8 @@ export class ContentLibraryTabComponent implements OnInit {
   pageNumber = signal(1);
   readonly pageSize = 12;
   private searchDebounceId: ReturnType<typeof setTimeout> | null = null;
+  private previewObjectUrls = new Map<number, string>();
+  private previewLoadingIds = new Set<number>();
 
   readonly filteredItems = computed(() =>
     this.mediaItems().filter((item) => this.matchesSelectedType(item)),
@@ -92,6 +94,12 @@ export class ContentLibraryTabComponent implements OnInit {
   ngOnInit(): void {
     this.loadHeaderStats();
     this.loadMediaLibrary();
+  }
+
+  ngOnDestroy(): void {
+    this.previewObjectUrls.forEach((url) => window.URL.revokeObjectURL(url));
+    this.previewObjectUrls.clear();
+    this.previewLoadingIds.clear();
   }
 
   @HostListener('document:click')
@@ -223,6 +231,7 @@ export class ContentLibraryTabComponent implements OnInit {
         if (res?.status && res.data) {
           this.mediaItems.set(res.data.items ?? []);
           this.totalCount.set(res.data.totalCount ?? 0);
+          this.preloadPreviewImages(res.data.items ?? []);
         } else {
           this.mediaItems.set([]);
           this.totalCount.set(0);
@@ -317,11 +326,11 @@ export class ContentLibraryTabComponent implements OnInit {
   }
 
   getPreviewImageUrl(item: MediaContentListItemDto): string {
-    return this.resolveMediaUrl(item.thumbnailUrl || item.fileUrl);
+    return this.previewObjectUrls.get(item.id) || '';
   }
 
   hasVisualPreview(item: MediaContentListItemDto): boolean {
-    return !!this.getPreviewImageUrl(item) && this.getSubtype(item) !== 'pdf' && this.getSubtype(item) !== 'powerpoint';
+    return !!this.getPreviewSourcePath(item) && this.getSubtype(item) !== 'pdf' && this.getSubtype(item) !== 'powerpoint';
   }
 
   resolveMediaUrl(path?: string | null): string {
@@ -386,5 +395,51 @@ export class ContentLibraryTabComponent implements OnInit {
       .toLowerCase();
 
     return `${baseName || 'media-file'}${extension}`;
+  }
+
+  private preloadPreviewImages(items: MediaContentListItemDto[]): void {
+    items.forEach((item) => {
+      const sourcePath = this.getPreviewSourcePath(item);
+
+      if (!sourcePath || this.previewObjectUrls.has(item.id) || this.previewLoadingIds.has(item.id)) {
+        return;
+      }
+
+      this.previewLoadingIds.add(item.id);
+
+      this.digitalSignageService.getMediaFileBlob(sourcePath).subscribe({
+        next: (blob) => {
+          const previousUrl = this.previewObjectUrls.get(item.id);
+          if (previousUrl) {
+            window.URL.revokeObjectURL(previousUrl);
+          }
+
+          const objectUrl = window.URL.createObjectURL(blob);
+          this.previewObjectUrls.set(item.id, objectUrl);
+          this.previewLoadingIds.delete(item.id);
+          this.mediaItems.update((current) => [...current]);
+        },
+        error: (err) => {
+          console.error('Failed to load card preview image', err);
+          this.previewLoadingIds.delete(item.id);
+        },
+      });
+    });
+  }
+
+  private getPreviewSourcePath(item: MediaContentListItemDto): string {
+    if (item.thumbnailUrl) {
+      return item.thumbnailUrl;
+    }
+
+    if (item.thumbnailPath) {
+      return item.thumbnailPath;
+    }
+
+    if (Number(item.contentType) === MediaContentType.Image) {
+      return item.fileUrl;
+    }
+
+    return '';
   }
 }

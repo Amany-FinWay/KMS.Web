@@ -17,6 +17,7 @@ export interface MediaContentListItemDto {
   contentTypeName: string;
   fileUrl: string;
   thumbnailUrl?: string | null;
+  thumbnailPath?: string | null;
   fileSizeInBytes: number;
   fileSizeFormatted: string;
   durationInSeconds?: number | null;
@@ -32,6 +33,7 @@ export interface MediaContentDetailsDto extends MediaContentListItemDto {
   originalFileName: string;
   extension: string;
   mimeType: string;
+  thumbnailPath?: string | null;
   width?: number | null;
   height?: number | null;
   updatedAt?: string | null;
@@ -66,7 +68,7 @@ export interface CreateMediaContentFormValue {
   description: string;
   tags: string;
   selectedFileType: string;
-  posterFile: File | null;
+  thumbnailFile: File | null;
   durationInSeconds?: number | null;
   file: File | null;
 }

@@ -35,19 +35,19 @@ export class MediaUploadModalComponent implements OnDestroy {
   ] as const;
 
   saving = signal(false);
-  posterPreviewUrl = signal<string>('');
+  thumbnailPreviewUrl = signal<string>('');
   form = signal<CreateMediaContentFormValue>({
     title: '',
     description: '',
     tags: '',
     selectedFileType: 'image',
-    posterFile: null,
+    thumbnailFile: null,
     durationInSeconds: null,
     file: null,
   });
 
   ngOnDestroy(): void {
-    this.revokePosterPreview();
+    this.revokeThumbnailPreview();
   }
 
   onFileSelected(event: Event): void {
@@ -75,11 +75,11 @@ export class MediaUploadModalComponent implements OnDestroy {
     }));
   }
 
-  onPosterSelected(event: Event): void {
+  onThumbnailSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const posterFile = input.files?.[0] ?? null;
+    const thumbnailFile = input.files?.[0] ?? null;
 
-    if (posterFile && !this.isImageFile(posterFile.name)) {
+    if (thumbnailFile && !this.isImageFile(thumbnailFile.name)) {
       this.spinnerToasterService.showToaster(
         'error',
         'Poster must be an image file',
@@ -88,15 +88,15 @@ export class MediaUploadModalComponent implements OnDestroy {
       return;
     }
 
-    this.revokePosterPreview();
+    this.revokeThumbnailPreview();
 
-    if (posterFile) {
-      this.posterPreviewUrl.set(window.URL.createObjectURL(posterFile));
+    if (thumbnailFile) {
+      this.thumbnailPreviewUrl.set(window.URL.createObjectURL(thumbnailFile));
     }
 
     this.form.update((value) => ({
       ...value,
-      posterFile,
+      thumbnailFile,
     }));
   }
 
@@ -155,8 +155,8 @@ export class MediaUploadModalComponent implements OnDestroy {
       formData.append('durationInSeconds', String(value.durationInSeconds));
     }
 
-    if (value.posterFile) {
-      formData.append('posterFile', value.posterFile);
+    if (value.thumbnailFile) {
+      formData.append('thumbnail', value.thumbnailFile);
     }
 
     value.tags
@@ -210,12 +210,12 @@ export class MediaUploadModalComponent implements OnDestroy {
     return ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'].includes(extension);
   }
 
-  private revokePosterPreview(): void {
-    const currentPreview = this.posterPreviewUrl();
+  private revokeThumbnailPreview(): void {
+    const currentPreview = this.thumbnailPreviewUrl();
 
     if (currentPreview) {
       window.URL.revokeObjectURL(currentPreview);
-      this.posterPreviewUrl.set('');
+      this.thumbnailPreviewUrl.set('');
     }
   }
 }
