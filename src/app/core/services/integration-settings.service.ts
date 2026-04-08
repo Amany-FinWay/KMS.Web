@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { IntegrationSettingsPageDto, StatusResponse } from '../models/models/integrations-settings.model';
+import { IntegrationSettingsPageDto } from '../models/models/integrations/integrations-settings.model';
+import { StatusResponse } from '../models/_common/api-response.model';
 
 
 @Injectable({

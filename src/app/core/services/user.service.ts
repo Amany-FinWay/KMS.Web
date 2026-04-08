@@ -9,7 +9,7 @@ import {
   UserDto,
   UserFilterDto,
   UsersPageResponseDto
-} from '../models/models/user.model';
+} from '../models/models/user/user.model';
 
 @Injectable({
   providedIn: 'root'

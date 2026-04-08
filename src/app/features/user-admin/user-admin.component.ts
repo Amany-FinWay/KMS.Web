@@ -19,10 +19,14 @@ import {
   CreateUserDto,
   RoleOptionDto,
   UserDto,
-  UserFilterDto
-} from '../../core/models/models/user.model';
+  UserFilterDto,
+  UserItem,
+  StatusType
+} from '../../core/models/models/user/user.model';
 import { SharedGridComponent } from '../../shared/components/shared-grid/shared-grid.component';
 import { GridActionsButtonsComponent } from '../../shared/components/grid-actions-buttons/grid-actions-buttons.component';
+import { UserUpsertComponent } from './user-upsert/user-upsert.component';
+import { SpinnerToasterService } from '../../core/services/spinner-toaster.service';
 
 const icons = {
   Search,
@@ -37,19 +41,6 @@ const icons = {
   Users
 };
 
-type StatusType = 'active' | 'inactive';
-
-interface UserItem {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  phone: string;
-  department: string;
-  role: string;
-  status: StatusType;
-  lastLogin: string;
-}
 
 @Component({
   selector: 'app-user-admin',
@@ -60,12 +51,13 @@ interface UserItem {
     LucideAngularModule,
     SharedGridComponent,
     LucideAngularModule,
+    UserUpsertComponent,
   ],
   templateUrl: './user-admin.component.html',
 })
 export class UserAdminComponent implements OnInit {
   private userService = inject(UserService);
-
+  private toastService = inject(SpinnerToasterService);
   readonly iconList = icons;
 
   loading = signal(false);
@@ -79,8 +71,9 @@ export class UserAdminComponent implements OnInit {
 
   statuses = ['All Status', 'active', 'inactive'];
 
-  isAddUserOpen = signal(false);
-
+  //isAddUserOpen = signal(false);
+  isUpsertOpen = signal(false);
+  selectedUser = signal<UserItem | null>(null);
   users = signal<UserItem[]>([]);
 
   totalUsers = computed(() => this.filteredUsers().length);
@@ -154,7 +147,7 @@ export class UserAdminComponent implements OnInit {
     },
     {
       headerName: 'Actions',
-      cellRenderer: GridActionsButtonsComponent, // الـ Component اللي عملناه المرة اللي فاتت
+      cellRenderer: GridActionsButtonsComponent,
       minWidth: 120,
     },
   ];
@@ -193,8 +186,6 @@ export class UserAdminComponent implements OnInit {
 
   loadUsers(): void {
     this.loading.set(true);
-
-    // بنبعت null للفلاتر عشان السيرفر يرجعلنا القائمة الكاملة
     const filter: UserFilterDto = {
       search: null,
       role: null,
@@ -207,12 +198,10 @@ export class UserAdminComponent implements OnInit {
         this.loading.set(false);
         if (res?.status && res?.data) {
           const apiUsers = res.data.users?.items ?? [];
-          const mappedUsers = apiUsers.map((u: any) => this.mapApiUserToViewModel(u));
-          
-          // تحديث الـ Signal الأساسي بيخلي الـ computed تشتغل فوراً
+          const mappedUsers = apiUsers.map((u: any) =>
+            this.mapApiUserToViewModel(u),
+          );
           this.users.set(mappedUsers);
-
-          // تحديث الأدوار المتاحة في الـ Dropdown
           const apiRoles = res.data.roles ?? [];
           this.roleOptions.set(apiRoles);
           this.roles.set(['All Roles', ...apiRoles.map((r: any) => r.role)]);
@@ -221,7 +210,7 @@ export class UserAdminComponent implements OnInit {
       error: (err) => {
         this.loading.set(false);
         console.error('Load users failed', err);
-      }
+      },
     });
   }
 
@@ -233,7 +222,7 @@ export class UserAdminComponent implements OnInit {
       email: user.email,
       phone: user.phoneNumber || '-',
       department: user.department || '-',
-      role: user.role, // "Administrator", "Operator", etc.
+      role: user.role,
       status: user.isActive ? 'active' : 'inactive',
       lastLogin: user.lastLoginAt
         ? new Date(user.lastLoginAt).toLocaleDateString()
@@ -252,6 +241,11 @@ export class UserAdminComponent implements OnInit {
     return mapping[roleName] || null;
   }
 
+  closeUpsert() {
+    this.isUpsertOpen.set(false);
+    this.selectedUser.set(null);
+  }
+
   mapStatusToBoolean(status: string): boolean | null {
     if (status === 'All Status') return null;
     return status === 'active';
@@ -261,8 +255,23 @@ export class UserAdminComponent implements OnInit {
     return user.id;
   }
 
+  handleUserAdded(message: string) {
+    this.isUpsertOpen.set(false);
+    this.loadUsers();
+    alert(message);
+  }
+
   onEdit(user: UserItem) {
-    console.log('Edit user:', user);
+    console.log('Opening edit for:', user);
+    this.selectedUser.set(user);
+    this.isUpsertOpen.set(true);
+  }
+
+  handleUpsertSuccess(message: string) {
+    this.isUpsertOpen.set(false);
+    this.selectedUser.set(null);
+    this.loadUsers();
+    //alert(message);
   }
 
   onDelete(user: UserItem) {
@@ -289,9 +298,17 @@ export class UserAdminComponent implements OnInit {
         if (res.status) {
           this.closeDeleteModal();
           this.loadUsers();
-          alert(res.message || 'User deleted successfully');
+          //alert(res.message || 'User deleted successfully');
+          this.toastService.showToaster(
+            'success',
+            res.message || 'User deleted successfully',
+          );
         } else {
-          alert(res.message || 'Delete failed');
+          //alert(res.message || 'Delete failed');
+          this.toastService.showToaster(
+            'error',
+            res.message || 'Delete failed',
+          );
         }
       },
       error: (err) => {
@@ -302,85 +319,10 @@ export class UserAdminComponent implements OnInit {
   }
 
   onAddUser() {
-    this.addUserModel = {
-      fullName: '',
-      userName: '',
-      email: '',
-      phoneNumber: '',
-      department: '',
-      role:
-        this.mapRoleNameToValue(String(this.roleOptions()[0]?.role ?? '')) ?? 0,
-      password: '',
-    };
-
-    this.passwordErrors.set([]);
-    this.isAddUserOpen.set(true);
-  }
-  closeAddUserModal() {
-    this.passwordErrors.set([]);
-    this.isAddUserOpen.set(false);
+    this.selectedUser.set(null);
+    this.isUpsertOpen.set(true);
   }
 
-  submitAddUser() {
-    if (!this.addUserModel.fullName?.trim()) {
-      alert('Full Name is required');
-      return;
-    }
-
-    if (!this.addUserModel.userName?.trim()) {
-      alert('Username is required');
-      return;
-    }
-
-    if (!this.addUserModel.email?.trim()) {
-      alert('Email is required');
-      return;
-    }
-
-    if (!this.addUserModel.role) {
-      alert('Role is required');
-      return;
-    }
-
-    const passwordValidationErrors = this.validatePassword(
-      this.addUserModel.password,
-    );
-    this.passwordErrors.set(passwordValidationErrors);
-
-    if (passwordValidationErrors.length > 0) {
-      return;
-    }
-    const dto: CreateUserDto = {
-      fullName: this.addUserModel.fullName.trim(),
-      userName: this.addUserModel.userName.trim(),
-      email: this.addUserModel.email.trim(),
-      phoneNumber: this.addUserModel.phoneNumber?.trim() || '',
-      department: this.addUserModel.department?.trim() || '',
-      role: this.addUserModel.role,
-      password: this.addUserModel.password,
-    };
-
-    console.log('Create DTO:', dto);
-
-    this.userService.createUser(dto).subscribe({
-      next: (res: any) => {
-        console.log('Create response:', res);
-
-        if (res?.status) {
-          this.closeAddUserModal();
-          this.loadUsers();
-          alert(res.message || 'User created successfully');
-        } else {
-          alert(res?.message || 'Create failed');
-        }
-      },
-      error: (err) => {
-        console.error('Create user failed', err);
-        console.log('status:', err.status);
-        console.log('error body:', err.error);
-      },
-    });
-  }
   onViewRoles() {
     this.showRoles.update((value) => !value);
   }
@@ -406,42 +348,5 @@ export class UserAdminComponent implements OnInit {
     return status === 'active'
       ? 'inline-flex rounded-full px-3 py-1 text-sm font-medium capitalize bg-emerald-100 text-emerald-700'
       : 'inline-flex rounded-full px-3 py-1 text-sm font-medium capitalize bg-slate-100 text-slate-700';
-  }
-
-  // Validation Password
-  validatePassword(password: string): string[] {
-    const errors: string[] = [];
-
-    if (!password || password.trim().length === 0) {
-      errors.push('Password is required');
-      return errors;
-    }
-
-    if (password.length < 8) {
-      errors.push('Password must be at least 8 characters');
-    }
-
-    if (!/[A-Z]/.test(password)) {
-      errors.push('Password must contain at least one uppercase letter');
-    }
-
-    if (!/[a-z]/.test(password)) {
-      errors.push('Password must contain at least one lowercase letter');
-    }
-
-    if (!/[0-9]/.test(password)) {
-      errors.push('Password must contain at least one number');
-    }
-
-    if (!/[^A-Za-z0-9]/.test(password)) {
-      errors.push('Password must contain at least one special character');
-    }
-
-    return errors;
-  }
-
-  onPasswordChange(value: string) {
-    this.addUserModel.password = value;
-    this.passwordErrors.set(this.validatePassword(value));
   }
 }

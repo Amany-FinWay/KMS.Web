@@ -14,7 +14,7 @@ import {
   CircleAlert
 } from 'lucide-angular';
 import { IntegrationSettingsService } from '../../core/services/integration-settings.service';
-import { IntegrationSettingsPageDto } from '../../core/models/models/integrations-settings.model';
+import { IntegrationSettingsPageDto } from '../../core/models/models/integrations/integrations-settings.model';
 
 
 const icons = {
