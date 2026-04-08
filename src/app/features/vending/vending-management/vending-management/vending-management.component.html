@@ -1,0 +1,64 @@
+<div class="min-h-screen bg-[#f8f8fb] text-slate-900">
+  <div class="mx-auto max-w-[1440px] px-10 py-8">
+    <div class="flex items-start gap-4">
+      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-b from-violet-600 to-fuchsia-500 shadow-sm">
+        <lucide-icon [img]="icons.ShoppingBag" class="h-7 w-7 text-white"></lucide-icon>
+      </div>
+
+      <div>
+        <h1 class="text-[28px] font-semibold leading-8 text-slate-950">
+          Vending Machine Management
+        </h1>
+        <p class="mt-2 text-[16px] text-slate-600">
+          Manage products, categories, and machine configurations
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-8 flex items-center gap-4">
+      <button
+        type="button"
+        (click)="setTab('products')"
+        class="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-[15px] font-medium transition"
+        [ngClass]="activeTab() === 'products'
+          ? 'bg-violet-100 text-violet-700'
+          : 'text-slate-700 hover:bg-slate-100'"
+      >
+        <lucide-icon [img]="icons.Package" class="h-4 w-4"></lucide-icon>
+        <span>Products</span>
+      </button>
+
+      <button
+        type="button"
+        (click)="setTab('categories')"
+        class="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-[15px] font-medium transition"
+        [ngClass]="activeTab() === 'categories'
+          ? 'bg-violet-100 text-violet-700'
+          : 'text-slate-700 hover:bg-slate-100'"
+      >
+        <lucide-icon [img]="icons.Tag" class="h-4 w-4"></lucide-icon>
+        <span>Categories</span>
+      </button>
+
+      <button
+        type="button"
+        (click)="setTab('machines')"
+        class="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-[15px] font-medium transition"
+        [ngClass]="activeTab() === 'machines'
+          ? 'bg-violet-100 text-violet-700'
+          : 'text-slate-700 hover:bg-slate-100'"
+      >
+        <lucide-icon [img]="icons.Grid3X3" class="h-4 w-4"></lucide-icon>
+        <span>Vending Machines</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="border-t border-slate-200"></div>
+
+  <div class="mx-auto max-w-[1440px] px-10 py-10">
+    <app-products-tab *ngIf="activeTab() === 'products'"></app-products-tab>
+    <app-categories-tab *ngIf="activeTab() === 'categories'"></app-categories-tab>
+    <app-machines-tab *ngIf="activeTab() === 'machines'"></app-machines-tab>
+  </div>
+</div>

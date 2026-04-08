@@ -1,0 +1,57 @@
+<div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+  <article class="rounded-[18px] border border-[#E4E7EC] bg-white px-7 py-6">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="text-[15px] text-[#344054]">Total Revenue</p>
+        <h3 class="mt-3 text-[20px] font-semibold text-[#101828]">
+          {{ (summary?.totalRevenue ?? 0) | currency:'USD':'symbol':'1.0-0' }}
+        </h3>
+      </div>
+      <div class="flex h-[52px] w-[52px] items-center justify-center rounded-[14px] bg-[#DCFCE7] text-[#16A34A]">
+        <lucide-icon [img]="icons.CircleDollarSign" class="h-6 w-6"></lucide-icon>
+      </div>
+    </div>
+  </article>
+
+  <article class="rounded-[18px] border border-[#E4E7EC] bg-white px-7 py-6">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="text-[15px] text-[#344054]">Total Transactions</p>
+        <h3 class="mt-3 text-[20px] font-semibold text-[#101828]">
+          {{ summary?.totalTransactions ?? 0 }}
+        </h3>
+      </div>
+      <div class="flex h-[52px] w-[52px] items-center justify-center rounded-[14px] bg-[#DBEAFE] text-[#2563EB]">
+        <lucide-icon [img]="icons.ReceiptText" class="h-6 w-6"></lucide-icon>
+      </div>
+    </div>
+  </article>
+
+  <article class="rounded-[18px] border border-[#E4E7EC] bg-white px-7 py-6">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="text-[15px] text-[#344054]">Success Rate</p>
+        <h3 class="mt-3 text-[20px] font-semibold text-[#101828]">
+          {{ summary?.successRate ?? 0 }}%
+        </h3>
+      </div>
+      <div class="flex h-[52px] w-[52px] items-center justify-center rounded-[14px] bg-[#F3E8FF] text-[#9333EA]">
+        <lucide-icon [img]="icons.TrendingUp" class="h-6 w-6"></lucide-icon>
+      </div>
+    </div>
+  </article>
+
+  <article class="rounded-[18px] border border-[#E4E7EC] bg-white px-7 py-6">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="text-[15px] text-[#344054]">Total Customers</p>
+        <h3 class="mt-3 text-[20px] font-semibold text-[#101828]">
+          {{ summary?.totalCustomers ?? 0 }}
+        </h3>
+      </div>
+      <div class="flex h-[52px] w-[52px] items-center justify-center rounded-[14px] bg-[#FEF3C7] text-[#F97316]">
+        <lucide-icon [img]="icons.Users" class="h-6 w-6"></lucide-icon>
+      </div>
+    </div>
+  </article>
+</div>

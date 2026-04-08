@@ -1,0 +1,323 @@
+<div class="space-y-8">
+  <div
+    *ngIf="loading()"
+    class="rounded-[24px] border border-[#E5E7EB] bg-white px-8 py-10 text-center text-[15px] text-slate-500"
+  >
+    Loading agents...
+  </div>
+
+  <ng-container *ngIf="!loading()">
+    <!-- KIOSK AGENT SECTION -->
+    <section class="rounded-[24px] border border-[#E5E7EB] bg-white px-8 py-7 shadow-sm">
+      <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div class="flex items-start gap-5">
+          <div
+            class="flex h-[58px] w-[58px] items-center justify-center rounded-[16px] bg-[#E8F0FF]"
+          >
+            <lucide-icon
+              [img]="icons.Server"
+              class="h-7 w-7 text-[#2563EB]"
+            ></lucide-icon>
+          </div>
+
+          <div class="max-w-[1050px]">
+            <h2 class="mb-3 text-[22px] font-semibold leading-none text-[#0F172A]">
+              Download Kiosk Agent
+            </h2>
+            <p class="text-[16px] leading-10 text-[#475569] max-md:leading-8">
+              The Kiosk Agent is required for registering and managing kiosks.
+              Download and install it on each kiosk terminal. After installation,
+              the kiosk will automatically register with the portal and report its
+              hardware details and capabilities.
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          (click)="openKioskAgentModal()"
+          class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 text-sm font-medium text-white shadow-sm transition hover:opacity-95"
+        >
+          <lucide-icon [img]="icons.Plus" class="h-4 w-4"></lucide-icon>
+          Add Kiosk Agent
+        </button>
+      </div>
+
+      <div
+        class="mb-14 rounded-[18px] border border-[#BFDBFE] bg-[#EFF6FF] px-5 py-5"
+      >
+        <div class="mb-3 flex items-center gap-3">
+          <lucide-icon
+            [img]="icons.Monitor"
+            class="h-5 w-5 text-[#1E40AF]"
+          ></lucide-icon>
+          <h3 class="text-[15px] font-semibold text-[#1E40AF]">
+            Installation Steps
+          </h3>
+        </div>
+
+        <ol class="space-y-2 pl-5 text-[15px] leading-8 text-[#1D4ED8]">
+          <li>1. Download the appropriate agent version for your kiosk platform</li>
+          <li>2. Run the installer on the kiosk terminal with administrator privileges</li>
+          <li>3. Follow the installation wizard and configure the portal connection</li>
+          <li>4. The agent will automatically register the kiosk and begin reporting status</li>
+          <li>5. Verify the kiosk appears in your dashboard within 2-3 minutes</li>
+        </ol>
+      </div>
+
+      <div class="mb-5">
+        <h3 class="text-[16px] font-semibold text-[#0F172A]">Available Versions</h3>
+      </div>
+
+      <div *ngIf="!kioskAgents().length" class="rounded-[18px] border border-[#E5E7EB] bg-white px-6 py-8 text-center text-slate-500">
+        No kiosk agents found.
+      </div>
+
+      <div *ngIf="kioskAgents().length" class="space-y-5">
+        <div
+          *ngFor="let agent of kioskAgents()"
+          class="flex flex-col gap-4 rounded-[18px] border border-[#E5E7EB] bg-white px-5 py-5 md:flex-row md:items-center md:justify-between"
+        >
+          <div class="flex min-w-0 items-center gap-4">
+            <div
+              class="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-[14px] bg-[#F3E8FF]"
+            >
+              <lucide-icon
+                [img]="getKioskPlatformIcon(agent.platformName)"
+                class="h-6 w-6 text-[#9333EA]"
+              ></lucide-icon>
+            </div>
+
+            <div class="min-w-0">
+              <h4 class="truncate text-[18px] font-semibold text-[#0F172A]">
+                {{ agent.name }} {{ agent.version }} - {{ agent.platformName }}
+              </h4>
+
+              <p class="mt-1 text-[15px] text-[#475569]">
+                Size: {{ agent.sizeInMb }} MB
+                <span class="mx-1">•</span>
+                Released:
+                {{ agent.releasedAt | date: 'M/d/yyyy' }}
+                <span class="mx-1">•</span>
+                Min OS: {{ agent.minimumOs }}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            (click)="download(agent.filePath)"
+            class="inline-flex h-[44px] shrink-0 items-center justify-center gap-2 rounded-[14px] bg-[#020617] px-6 text-[15px] font-semibold text-white transition hover:opacity-95"
+          >
+            <lucide-icon [img]="icons.Download" class="h-4 w-4"></lucide-icon>
+            Download
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="mt-14 rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFC] px-5 py-6"
+      >
+        <h3 class="mb-5 text-[16px] font-semibold text-[#0F172A]">
+          System Requirements
+        </h3>
+
+        <div class="grid grid-cols-1 gap-y-3 md:grid-cols-2 md:gap-x-12">
+          <div class="space-y-2 text-[15px] leading-7 text-[#475569]">
+            <p>• Processor: Intel Core i3 or equivalent</p>
+            <p>• RAM: 4 GB minimum, 8 GB recommended</p>
+            <p>• Storage: 10 GB free space</p>
+          </div>
+
+          <div class="space-y-2 text-[15px] leading-7 text-[#475569]">
+            <p>• Network: Stable internet connection</p>
+            <p>• Ports: TCP 443, 8080 (outbound)</p>
+            <p>• Admin rights: Required for installation</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIGITAL SIGNAGE SECTION -->
+    <section class="rounded-[24px] border border-[#E5E7EB] bg-white px-8 py-7 shadow-sm">
+      <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div class="flex items-start gap-5">
+          <div
+            class="flex h-[58px] w-[58px] items-center justify-center rounded-[16px] bg-[#F3E8FF]"
+          >
+            <lucide-icon
+              [img]="icons.Tv"
+              class="h-7 w-7 text-[#9333EA]"
+            ></lucide-icon>
+          </div>
+
+          <div class="max-w-[1050px]">
+            <h2 class="mb-3 text-[22px] font-semibold leading-none text-[#0F172A]">
+              Download Digital Signage Agent
+            </h2>
+            <p class="text-[16px] leading-10 text-[#475569] max-md:leading-8">
+              The Digital Signage Agent enables remote content management and
+              display control on digital screens. Install this agent on devices
+              connected to your digital signage displays to enable centralized
+              content deployment, scheduling, and real-time monitoring.
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          (click)="openDigitalAgentModal()"
+          class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 text-sm font-medium text-white shadow-sm transition hover:opacity-95"
+        >
+          <lucide-icon [img]="icons.Plus" class="h-4 w-4"></lucide-icon>
+          Add Digital Signage Agent
+        </button>
+      </div>
+
+      <div
+        class="mb-14 rounded-[18px] border border-[#E9D5FF] bg-[#FAF5FF] px-5 py-5"
+      >
+        <div class="mb-3 flex items-center gap-3">
+          <lucide-icon
+            [img]="icons.Tv"
+            class="h-5 w-5 text-[#7E22CE]"
+          ></lucide-icon>
+          <h3 class="text-[15px] font-semibold text-[#7E22CE]">
+            Installation Steps for Digital Signage
+          </h3>
+        </div>
+
+        <ol class="space-y-2 pl-5 text-[15px] leading-8 text-[#9333EA]">
+          <li>1. Download the digital signage agent for your display platform</li>
+          <li>2. Install the agent on the device connected to your display screen</li>
+          <li>3. Configure the portal connection and screen identification</li>
+          <li>4. The agent will register the screen and begin listening for content</li>
+          <li>5. Deploy content, schedules, and templates from the Digital Signage module</li>
+        </ol>
+      </div>
+
+      <div class="mb-5">
+        <h3 class="text-[16px] font-semibold text-[#0F172A]">Available Versions</h3>
+      </div>
+
+      <div *ngIf="!digitalAgents().length" class="rounded-[18px] border border-[#E5E7EB] bg-white px-6 py-8 text-center text-slate-500">
+        No digital signage agents found.
+      </div>
+
+      <div *ngIf="digitalAgents().length" class="space-y-5">
+        <div
+          *ngFor="let agent of digitalAgents()"
+          class="flex flex-col gap-4 rounded-[18px] border border-[#E5E7EB] bg-white px-5 py-5 md:flex-row md:items-center md:justify-between"
+        >
+          <div class="flex min-w-0 items-center gap-4">
+            <div
+              class="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-[14px]"
+              [ngClass]="{
+                'bg-[#DBEAFE]': (agent.platformName || '').toLowerCase().includes('windows'),
+                'bg-[#DCFCE7]': (agent.platformName || '').toLowerCase().includes('android'),
+                'bg-[#FDE7C7]': (agent.platformName || '').toLowerCase().includes('linux'),
+                'bg-[#FCE7F3]': (agent.platformName || '').toLowerCase().includes('raspberry')
+              }"
+            >
+              <lucide-icon
+                [img]="getDigitalPlatformIcon(agent.platformName)"
+                class="h-6 w-6"
+                [ngClass]="{
+                  'text-[#2563EB]': (agent.platformName || '').toLowerCase().includes('windows'),
+                  'text-[#16A34A]': (agent.platformName || '').toLowerCase().includes('android'),
+                  'text-[#EA580C]': (agent.platformName || '').toLowerCase().includes('linux'),
+                  'text-[#DB2777]': (agent.platformName || '').toLowerCase().includes('raspberry')
+                }"
+              ></lucide-icon>
+            </div>
+
+            <div class="min-w-0">
+              <h4 class="truncate text-[18px] font-semibold text-[#0F172A]">
+                {{ agent.name }} {{ agent.version }} - {{ agent.platformName }}
+              </h4>
+
+              <p class="mt-1 text-[15px] text-[#475569]">
+                Size: {{ agent.sizeInMb }} MB
+                <span class="mx-1">•</span>
+                Released:
+                {{ agent.releasedAt | date: 'MMMM d, y' }}
+                <span class="mx-1">•</span>
+                Min OS: {{ agent.minimumOs }}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            (click)="download(agent.filePath)"
+            class="inline-flex h-[44px] shrink-0 items-center justify-center gap-2 rounded-[14px] bg-[#A21CAF] px-6 text-[15px] font-semibold text-white transition hover:opacity-95"
+          >
+            <lucide-icon [img]="icons.Download" class="h-4 w-4"></lucide-icon>
+            Download
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="mt-14 rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFC] px-5 py-6"
+      >
+        <h3 class="mb-5 text-[16px] font-semibold text-[#0F172A]">
+          System Requirements for Digital Signage
+        </h3>
+
+        <div class="grid grid-cols-1 gap-y-3 md:grid-cols-2 md:gap-x-12">
+          <div class="space-y-2 text-[15px] leading-7 text-[#475569]">
+            <p>• Processor: Intel Core i3 or ARM equivalent</p>
+            <p>• RAM: 2 GB minimum, 4 GB recommended</p>
+            <p>• Storage: 5 GB free space</p>
+            <p>• Display: HDMI/DisplayPort output</p>
+          </div>
+
+          <div class="space-y-2 text-[15px] leading-7 text-[#475569]">
+            <p>• Network: Stable internet connection (10 Mbps+)</p>
+            <p>• Ports: TCP 443, 8443 (outbound)</p>
+            <p>• Graphics: Hardware video decoding support</p>
+            <p>• Admin rights: Required for installation</p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="mt-8 rounded-[18px] border border-[#BFDBFE] bg-[#EFF6FF] px-5 py-5"
+      >
+        <div class="mb-3 flex items-center gap-3">
+          <lucide-icon
+            [img]="icons.Tv"
+            class="h-5 w-5 text-[#1D4ED8]"
+          ></lucide-icon>
+          <h3 class="text-[15px] font-semibold text-[#1D4ED8]">
+            Supported Features
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-2 md:grid-cols-2 md:gap-x-12 text-[15px] leading-8 text-[#2563EB]">
+          <div class="space-y-1">
+            <p>• Static images (JPG, PNG)</p>
+            <p>• Video playback (MP4, WAV)</p>
+            <p>• Dynamic API data templates</p>
+            <p>• Instant content push</p>
+          </div>
+
+          <div class="space-y-1">
+            <p>• PDF documents display</p>
+            <p>• PowerPoint presentations</p>
+            <p>• Scheduled content rotation</p>
+            <p>• Remote monitoring &amp; control</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </ng-container>
+</div>
+
+<app-kioskagent-upsert-modal
+  *ngIf="isModalOpen()"
+  [agentType]="selectedAgentType()"
+  (close)="closeModal()"
+  (saved)="onSaved()"
+></app-kioskagent-upsert-modal>

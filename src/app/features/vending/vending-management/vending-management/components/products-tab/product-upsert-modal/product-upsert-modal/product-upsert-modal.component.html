@@ -1,0 +1,223 @@
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-black p-4">
+  <div
+    class="w-full max-w-[940px] rounded-[16px] bg-white shadow-2xl"
+  >
+    <div class="max-h-[88vh] overflow-y-auto px-7 pb-6 pt-6">
+      <div class="mb-6 flex items-center justify-between">
+        <h3 class="text-[20px] font-semibold text-[#0f172a]">
+          {{ isEditMode ? 'Edit Product' : 'Add New Product' }}
+        </h3>
+
+        <button
+          type="button"
+          (click)="onClose()"
+          class="flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+        >
+          <lucide-icon [img]="icons.X" class="h-5 w-5"></lucide-icon>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            Name (English)
+          </label>
+          <input
+            [ngModel]="form().nameEn"
+            (ngModelChange)="updateForm('nameEn', $event)"
+            type="text"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          />
+        </div>
+
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            Name (Arabic)
+          </label>
+          <input
+            [ngModel]="form().nameAr"
+            (ngModelChange)="updateForm('nameAr', $event)"
+            type="text"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          />
+        </div>
+
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            Description (English)
+          </label>
+          <input
+            [ngModel]="form().descriptionEn"
+            (ngModelChange)="updateForm('descriptionEn', $event)"
+            type="text"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          />
+        </div>
+
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            Description (Arabic)
+          </label>
+          <input
+            [ngModel]="form().descriptionAr"
+            (ngModelChange)="updateForm('descriptionAr', $event)"
+            type="text"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          />
+        </div>
+
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            Category
+          </label>
+          <select
+            [ngModel]="form().categoryId"
+            (ngModelChange)="updateForm('categoryId', +$event)"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          >
+            <option [value]="0">Select Category</option>
+            <option *ngFor="let category of categories()" [value]="category.id">
+              {{ category.nameEn }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            Price ($)
+          </label>
+          <input
+            [ngModel]="form().price"
+            (ngModelChange)="updateForm('price', +$event)"
+            type="number"
+            step="0.01"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          />
+        </div>
+
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            SKU
+          </label>
+          <input
+            [ngModel]="form().sku"
+            (ngModelChange)="updateForm('sku', $event)"
+            type="text"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          />
+        </div>
+
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            Barcode
+          </label>
+          <input
+            [ngModel]="form().barcode"
+            (ngModelChange)="updateForm('barcode', $event)"
+            type="text"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          />
+        </div>
+
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            POS Bank Charge ($)
+          </label>
+          <input
+            [ngModel]="form().posBankCharge"
+            (ngModelChange)="updateForm('posBankCharge', +$event)"
+            type="number"
+            step="0.01"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          />
+        </div>
+
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            Tax Rate (%)
+          </label>
+          <input
+            [ngModel]="form().taxRate"
+            (ngModelChange)="updateForm('taxRate', +$event)"
+            type="number"
+            step="0.01"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          />
+        </div>
+
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            Weight (g)
+          </label>
+          <input
+            [ngModel]="form().weightInGrams"
+            (ngModelChange)="updateForm('weightInGrams', +$event)"
+            type="number"
+            step="0.01"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          />
+        </div>
+
+        <div>
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            Status
+          </label>
+          <select
+            [ngModel]="form().active"
+            (ngModelChange)="updateForm('active', $event === 'true' || $event === true)"
+            class="h-[48px] w-full rounded-[14px] border border-[#cbd5e1] bg-white px-4 text-[14px] outline-none transition focus:border-violet-400"
+          >
+            <option [ngValue]="true">Active</option>
+            <option [ngValue]="false">Inactive</option>
+          </select>
+        </div>
+
+        <!-- <div class="md:col-span-2">
+          <label class="mb-2 block text-[14px] font-medium text-[#334155]">
+            Product Image
+          </label>
+
+          <div class="flex items-center gap-4">
+            <label
+              class="inline-flex h-[48px] cursor-pointer items-center rounded-[14px] border border-[#cbd5e1] bg-white px-5 text-[14px] text-slate-700"
+            >
+              <input
+                type="file"
+                class="hidden"
+                accept=".jpg,.jpeg,.png,.webp"
+                (change)="onFileSelected($event)"
+              />
+              Choose Image
+            </label>
+
+            <div
+              *ngIf="imagePreview()"
+              class="h-16 w-16 overflow-hidden rounded-xl border border-slate-200 bg-slate-100"
+            >
+              <img [src]="imagePreview()!" alt="preview" class="h-full w-full object-cover" />
+            </div>
+          </div>
+        </div> -->
+      </div>
+
+      <div class="mt-7 grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          (click)="onClose()"
+          class="h-[48px] rounded-[14px] bg-[#f1f5f9] text-[15px] font-medium text-slate-700 transition hover:bg-[#e2e8f0]"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          (click)="onSubmit()"
+          [disabled]="saving()"
+          class="h-[48px] rounded-[14px] bg-gradient-to-r from-[#7c3aed] to-[#c026d3] text-[15px] font-medium text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {{ saving() ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Add Product') }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

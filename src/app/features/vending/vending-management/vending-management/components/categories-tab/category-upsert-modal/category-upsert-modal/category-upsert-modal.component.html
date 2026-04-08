@@ -1,0 +1,115 @@
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-black">
+  <div
+    class="w-full max-w-[430px] rounded-[14px] bg-white px-6 pb-6 pt-5 shadow-2xl"
+  >
+    <div class="mb-5 flex items-center justify-between">
+      <h3 class="text-[18px] font-semibold text-[#0f172a]">
+        {{ isEditMode ? 'Edit Category' : 'Add New Category' }}
+      </h3>
+
+      <button
+        type="button"
+        (click)="onClose()"
+        class="flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+      >
+        <lucide-icon [img]="icons.X" class="h-5 w-5"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label class="mb-1.5 block text-[13px] font-medium text-[#334155]">
+          Name (English)
+        </label>
+        <input
+          [ngModel]="form().nameEn"
+          (ngModelChange)="updateForm('nameEn', $event)"
+          type="text"
+          class="h-[42px] w-full rounded-[12px] border border-[#cbd5e1] bg-white px-4 text-[14px] text-slate-900 outline-none transition focus:border-violet-400"
+        />
+      </div>
+
+      <div>
+        <label class="mb-1.5 block text-[13px] font-medium text-[#334155]">
+          Name (Arabic)
+        </label>
+        <input
+          [ngModel]="form().nameAr"
+          (ngModelChange)="updateForm('nameAr', $event)"
+          type="text"
+          class="h-[42px] w-full rounded-[12px] border border-[#cbd5e1] bg-white px-4 text-[14px] text-slate-900 outline-none transition focus:border-violet-400"
+        />
+      </div>
+
+      <div>
+        <label class="mb-1.5 block text-[13px] font-medium text-[#334155]">
+          Description (English)
+        </label>
+        <textarea
+          [ngModel]="form().descriptionEn"
+          (ngModelChange)="updateForm('descriptionEn', $event)"
+          rows="3"
+          class="w-full resize-none rounded-[12px] border border-[#cbd5e1] bg-white px-4 py-3 text-[14px] text-slate-900 outline-none transition focus:border-violet-400"
+        ></textarea>
+      </div>
+
+      <div>
+        <label class="mb-1.5 block text-[13px] font-medium text-[#334155]">
+          Description (Arabic)
+        </label>
+        <textarea
+          [ngModel]="form().descriptionAr"
+          (ngModelChange)="updateForm('descriptionAr', $event)"
+          rows="3"
+          class="w-full resize-none rounded-[12px] border border-[#cbd5e1] bg-white px-4 py-3 text-[14px] text-slate-900 outline-none transition focus:border-violet-400"
+        ></textarea>
+      </div>
+
+      <!-- <div>
+        <label class="mb-1.5 block text-[13px] font-medium text-[#334155]">
+          Icon (Emoji)
+        </label>
+        <input
+          [ngModel]="form().icon"
+          (ngModelChange)="updateForm('icon', $event)"
+          type="text"
+          placeholder="📦"
+          class="h-[42px] w-full rounded-[12px] border border-[#cbd5e1] bg-white px-4 text-[14px] text-slate-900 outline-none transition focus:border-violet-400"
+        />
+      </div> -->
+
+      <!-- <div *ngIf="isEditMode">
+        <label class="mb-1.5 block text-[13px] font-medium text-[#334155]">
+          Status
+        </label>
+        <select
+          [ngModel]="form().active"
+          (ngModelChange)="updateForm('active', $event === 'true' || $event === true)"
+          class="h-[42px] w-full rounded-[12px] border border-[#cbd5e1] bg-white px-4 text-[14px] text-slate-900 outline-none transition focus:border-violet-400"
+        >
+          <option [ngValue]="true">Active</option>
+          <option [ngValue]="false">Inactive</option>
+        </select> -->
+      <!-- </div> -->
+    </div>
+
+    <div class="mt-6 grid grid-cols-2 gap-3">
+      <button
+        type="button"
+        (click)="onClose()"
+        class="h-[44px] rounded-[12px] bg-[#f1f5f9] text-[15px] font-medium text-slate-700 transition hover:bg-[#e2e8f0]"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        (click)="onSubmit()"
+        [disabled]="saving()"
+        class="h-[44px] rounded-[12px] bg-gradient-to-r from-[#7c3aed] to-[#c026d3] text-[15px] font-medium text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {{ saving() ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Add Category') }}
+      </button>
+    </div>
+  </div>
+</div>

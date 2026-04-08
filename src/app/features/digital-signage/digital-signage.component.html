@@ -1,0 +1,47 @@
+<div class="min-h-screen bg-[#F8FAFD] text-slate-900">
+  <div class="border-b border-[#E5E7EB] bg-white">
+    <div class="mx-auto flex max-w-[1360px] items-start justify-between px-8 py-8">
+      <div>
+        <h1 class="text-[30px] font-semibold leading-[1.1] text-[#0F172A]">
+          Digital Signage
+        </h1>
+        <p class="mt-2 text-[14px] text-[#475467]">
+          Manage digital displays, content and schedules
+        </p>
+      </div>
+
+      <div class="mt-2 inline-flex items-center gap-2.5 rounded-full bg-white px-3.5 py-1.5 text-[13px] text-[#334155]">
+        <span class="h-3 w-3 rounded-full bg-[#22C55E]"></span>
+        System Active
+      </div>
+    </div>
+  </div>
+
+  <div class="border-b border-[#E5E7EB] bg-white">
+    <div class="mx-auto flex max-w-[1360px] items-center gap-1 overflow-x-auto px-8">
+      <button
+        *ngFor="let tab of tabs"
+        type="button"
+        (click)="setTab(tab.id)"
+        class="inline-flex whitespace-nowrap items-center gap-2.5 border-b-2 px-6 py-4 text-[14px] font-medium transition"
+        [ngClass]="isActiveTab(tab.id)
+          ? 'border-[#2563EB] text-[#2563EB]'
+          : 'border-transparent text-[#475467] hover:text-[#1F2937]'"
+      >
+        <lucide-icon [img]="getTabIcon(tab.icon)" class="h-[18px] w-[18px]"></lucide-icon>
+        {{ tab.label }}
+      </button>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-[1360px] px-8 py-8">
+    <ng-container [ngSwitch]="activeTab()">
+      <app-screens-tab *ngSwitchCase="'screens'"></app-screens-tab>
+      <app-groups-tab *ngSwitchCase="'groups'"></app-groups-tab>
+      <app-content-library-tab *ngSwitchCase="'content-library'"></app-content-library-tab>
+      <app-scheduler-tab *ngSwitchCase="'scheduler'"></app-scheduler-tab>
+      <app-templates-tab *ngSwitchCase="'templates'"></app-templates-tab>
+      <app-instant-control-tab *ngSwitchCase="'instant-control'"></app-instant-control-tab>
+    </ng-container>
+  </div>
+</div>

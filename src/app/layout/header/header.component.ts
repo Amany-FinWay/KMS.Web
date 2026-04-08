@@ -35,6 +35,7 @@ const myIcons = {
   Lock,
   Wallet,
   Users,
+  Ribbon,
   LogOut
 };
 
@@ -66,6 +67,7 @@ export class HeaderComponent {
     { id: 'vending', label: 'Vending Machines', icon: 'ShoppingBag' },
     { id: 'lockers', label: 'Smart Lockers', icon: 'Lock' },
     { id: 'cash', label: 'Cash Handling', icon: 'Wallet' },
+    { id: 'digital-signage', label: 'Digital Signage', icon: 'Ribbon' },
     { id: 'admin', label: 'User Admin', icon: 'Users' },
   ];
 

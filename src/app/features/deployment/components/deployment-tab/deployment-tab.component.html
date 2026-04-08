@@ -1,0 +1,240 @@
+<div class="space-y-8">
+  <div
+    *ngIf="loading()"
+    class="rounded-[24px] border border-[#E5E7EB] bg-white px-8 py-10 text-center text-[15px] text-slate-500"
+  >
+    Loading deployment data...
+  </div>
+
+  <ng-container *ngIf="!loading()">
+    <div class="grid grid-cols-1 gap-8 xl:grid-cols-[1fr_390px]">
+      <!-- LEFT COLUMN -->
+      <div class="space-y-8">
+        <!-- Select Package -->
+        <section class="rounded-[24px] border border-[#E5E7EB] bg-white px-7 py-7 shadow-sm">
+          <div class="mb-6 flex items-center justify-between">
+            <h2 class="text-[20px] font-semibold text-[#0F172A]">Select Package</h2>
+
+            <button
+              type="button"
+              (click)="openUploadModal()"
+              class="inline-flex h-11 items-center justify-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 text-sm font-medium text-white shadow-sm transition hover:opacity-95"
+            >
+              <lucide-icon [img]="icons.Plus" class="h-4 w-4"></lucide-icon>
+              Upload Package
+            </button>
+          </div>
+
+          <div *ngIf="!packages().length" class="rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFC] px-6 py-8 text-center text-slate-500">
+            No deployment packages found.
+          </div>
+
+          <div *ngIf="packages().length" class="space-y-4">
+            <div
+              *ngFor="let pkg of packages()"
+              (click)="selectPackage(pkg.id)"
+              class="cursor-pointer rounded-[18px] border bg-white px-5 py-5 transition"
+              [ngClass]="
+                selectedPackageId() === pkg.id
+                  ? 'border-[#C4B5FD] shadow-sm'
+                  : 'border-[#E5E7EB] hover:border-[#D8B4FE]'
+              "
+            >
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <div class="flex items-center gap-3">
+                    <h3 class="text-[16px] font-semibold text-[#0F172A]">
+                      {{ pkg.name }}
+                    </h3>
+
+                    <span
+                      class="inline-flex items-center rounded-full px-3 py-1 text-[12px] font-semibold"
+                      [ngClass]="getPackageTypeClass(pkg.packageType)"
+                    >
+                      {{ getPackageTypeLabel(pkg.packageTypeName) }}
+                    </span>
+                  </div>
+
+                  <p class="mt-2 text-[15px] text-[#475569]">{{ pkg.description }}</p>
+
+                  <p class="mt-4 text-[15px] text-[#64748B]">
+                    Version {{ pkg.version }}
+                    <span class="mx-3">•</span>
+                    {{ pkg.sizeInMb }} MB
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  class="text-[#94A3B8]"
+                >
+                  <lucide-icon [img]="icons.Download" class="h-5 w-5"></lucide-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Deployment History -->
+        <section class="rounded-[24px] border border-[#E5E7EB] bg-white px-7 py-7 shadow-sm">
+          <h3 class="mb-6 text-[20px] font-semibold text-[#0F172A]">Deployment History</h3>
+
+          <div *ngIf="!history().length" class="rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFC] px-6 py-8 text-center text-slate-500">
+            No deployment history found.
+          </div>
+
+          <div *ngIf="history().length" class="space-y-5">
+            <div
+              *ngFor="let item of history()"
+              class="rounded-[18px] border border-[#E5E7EB] bg-white px-5 py-5"
+            >
+              <div class="mb-3 flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                  <lucide-icon
+                    [img]="getHistoryIcon(item.status)"
+                    class="mt-1 h-5 w-5"
+                    [ngClass]="
+                      item.status === 3 ? 'text-[#16A34A]' : 'text-[#2563EB]'
+                    "
+                  ></lucide-icon>
+
+                  <div>
+                    <h4 class="text-[16px] font-semibold text-[#0F172A]">
+                      {{ item.packageName }} {{ item.packageVersion }}
+                    </h4>
+                    <p class="mt-1 text-[15px] text-[#475569]">
+                      Deployed to {{ item.kioskCount }} kiosks
+                    </p>
+                    <p class="mt-2 text-[14px] text-[#64748B]">
+                      Started: {{ item.startedAt | date: 'M/d/yyyy, h:mm:ss a' }}
+                    </p>
+                  </div>
+                </div>
+
+                <span
+                  class="inline-flex items-center rounded-full px-4 py-2 text-[13px] font-semibold"
+                  [ngClass]="getHistoryStatusClass(item.status)"
+                >
+                  {{ item.statusName }}
+                </span>
+              </div>
+
+              <div *ngIf="item.statusName === 'InProgress'" class="mb-4">
+                <div class="mb-2 flex items-center justify-between">
+                  <span class="text-[15px] text-[#475569]">Progress</span>
+                  <span class="text-[16px] font-semibold text-[#0F172A]">
+                    {{ item.progressPercentage }}%
+                  </span>
+                </div>
+
+                <div class="h-2.5 overflow-hidden rounded-full bg-[#E5E7EB]">
+                  <div
+                    class="h-full rounded-full bg-[#2563EB]"
+                    [style.width.%]="item.progressPercentage"
+                  ></div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                <span
+                  *ngFor="let kioskName of item.kioskNames"
+                  class="rounded-[8px] bg-[#F1F5F9] px-3 py-1 text-[14px] text-[#475569]"
+                >
+                  {{ kioskName }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="space-y-7">
+        <!-- Deploy Package -->
+        <section class="rounded-[24px] border border-[#E5E7EB] bg-white px-7 py-7 shadow-sm">
+          <h3 class="mb-6 text-[18px] font-semibold text-[#0F172A]">Deploy Package</h3>
+
+          <div class="mb-5 rounded-[14px] border border-[#FDE68A] bg-[#FEFCE8] px-4 py-4 text-[15px] text-[#A16207]">
+            <div class="flex items-center gap-3">
+              <lucide-icon [img]="icons.TriangleAlert" class="h-5 w-5"></lucide-icon>
+              <span>
+                {{
+                  selectedPackage()
+                    ? ('Selected: ' + selectedPackage()?.name + ' ' + selectedPackage()?.version)
+                    : 'Select a package to deploy'
+                }}
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            (click)="deployNow()"
+            [disabled]="!canDeploy()"
+            class="inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-[14px] px-5 text-[16px] font-semibold text-white transition"
+            [ngClass]="
+              canDeploy()
+                ? 'bg-gradient-to-r from-violet-500 to-fuchsia-400 hover:opacity-95'
+                : 'cursor-not-allowed bg-[#D8B4FE] opacity-70'
+            "
+          >
+            <lucide-icon [img]="icons.Play" class="h-4 w-4"></lucide-icon>
+            {{ deploying() ? 'Deploying...' : 'Deploy Now' }}
+          </button>
+        </section>
+
+        <!-- Select Kiosks -->
+        <section class="rounded-[24px] border border-[#E5E7EB] bg-white px-7 py-7 shadow-sm">
+          <div class="mb-5 flex items-center justify-between">
+            <h3 class="text-[18px] font-semibold text-[#0F172A]">Select Kiosks</h3>
+
+            <button
+              type="button"
+              (click)="selectAllKiosks()"
+              class="text-[14px] font-semibold text-[#2563EB] transition hover:opacity-80"
+            >
+              Select All
+            </button>
+          </div>
+
+          <div class="max-h-[420px] space-y-3 overflow-y-auto pr-1">
+            <div
+              *ngFor="let kiosk of kiosks()"
+              class="flex items-start gap-4 rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-4"
+            >
+              <input
+                type="checkbox"
+                class="mt-2 h-5 w-5 rounded border-slate-300"
+                [checked]="kiosk.selected"
+                [disabled]="!kiosk.isActive"
+                (change)="toggleKiosk(kiosk.id)"
+              />
+
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-3">
+                  <span
+                    class="inline-block h-2.5 w-2.5 rounded-full"
+                    [ngClass]="kiosk.isActive ? 'bg-[#22C55E]' : 'bg-[#EF4444]'"
+                  ></span>
+
+                  <h4 class="truncate text-[16px] font-semibold text-[#0F172A]">
+                    {{ kiosk.name }}
+                  </h4>
+                </div>
+
+                <p class="mt-2 text-[15px] text-[#64748B]">{{ kiosk.subTitle }}</p>
+                <p class="text-[15px] text-[#64748B]">{{ kiosk.code }}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<app-deployment-package-upsert-modal
+  *ngIf="isUploadModalOpen()"
+  (close)="closeUploadModal()"
+  (saved)="onPackageSaved()"
+></app-deployment-package-upsert-modal>
